@@ -51,7 +51,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     # 실행할 플러그인
-    plugins = ["windows.info"]
+    plugins = ["windows.info", "windows.pslist.PsList", "windows.netstat.NetStat"]
 
     print("=== Starting Memory Analysis ===")
     for plugin in plugins:
