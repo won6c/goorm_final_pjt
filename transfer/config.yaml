@@ -1,0 +1,11 @@
+# config.yaml
+
+ssh:
+  host: 222.114.170.35
+  port: 22
+  username: pyh
+  password: 1234
+
+transfer:
+  local_path: D:\goorm\FinalProject\transfer\test.txt
+  remote_path: /home/pyh/test.txt
