@@ -1,0 +1,51 @@
+{
+    "analysis_type": "dynamic",
+    "timestamp": "2025-01-17T13:00:00Z",
+    "process_events": [
+      {
+        "event_type": "process_start",
+        "timestamp": "2025-01-17T13:00:05Z",
+        "process_name": "rat_controller.exe",
+        "pid": 4321,
+        "parent_pid": 987
+      },
+      {
+        "event_type": "process_terminate",
+        "timestamp": "2025-01-17T13:10:00Z",
+        "process_name": "rat_controller.exe",
+        "pid": 4321
+      }
+    ],
+    "file_events": [
+      {
+        "event_type": "file_create",
+        "timestamp": "2025-01-17T13:02:00Z",
+        "file_path": "C:\\Windows\\Temp\\rat_payload.dll"
+      }
+    ],
+    "network_events": [
+      {
+        "event_type": "network_connection",
+        "timestamp": "2025-01-17T13:03:00Z",
+        "destination_ip": "192.168.1.103",
+        "protocol": "TCP"
+      }
+    ],
+    "file_changes": {
+      "created_files": [
+        "C:\\Windows\\Temp\\asdfasdfrat_malicious.dll"
+      ],
+      "deleted_files": [
+        "C:\\333333important_file.txt"
+      ]
+    },
+    "network_traffic": {
+      "c2_server": {
+        "ip": "192.168.1.110",
+        "domain": "312malicious-site.com",
+        "ports_used": [80, 443]
+      }
+    },
+    "registry_changes": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run → rat_loader.exe"
+  }
+  
