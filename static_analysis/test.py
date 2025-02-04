@@ -3,7 +3,44 @@ import pefile  # pip install pefile
 import subprocess
 import os
 from suspicious import suspicious_apis
+from suspicious import packing_signatures
 import hashlib
+import magic # pip install python-magic
+
+# 파일 타입 확인
+def get_file_type(file_path):
+    if not os.path.exists(file_path):
+        return f"❌ 오류: '{file_path}' 파일이 존재하지 않습니다."
+
+    try:
+        with open(file_path, "rb") as f:
+            file_type = magic.from_buffer(f.read(2048), mime=True)
+        extension = os.path.splitext(file_path)[1]  # 파일 확장자 추출
+        print(f"📄 파일: {file_path}\n📂 확장자: {extension}\n🔍 MIME 타입: {file_type}")
+    except Exception as e:
+        print(f"에러 발생: {e}")
+
+# 패킹 시그니처 확인
+def detect_packing_signature(file_path):
+    try:
+        with open(file_path, "rb") as f:
+            data = f.read()
+
+        detected_packers = []
+        for packer, signature in packing_signatures.items():
+            if signature in data:
+                detected_packers.append(packer)
+
+        if detected_packers:
+            print(f"⚠️ 탐지된 패킹 시그니처: {', '.join(detected_packers)}")
+            return detected_packers
+        else:
+            print("✅ 패킹 시그니처 없음.")
+            return None
+    except FileNotFoundError:
+        print("파일을 찾을 수 없습니다.")
+    except Exception as e:
+        print(f"에러 발생: {e}")
 
 # UPX 패킹된 파일 자동 언패킹
 def unpack_upx(file_path):
@@ -25,7 +62,7 @@ def unpack_upx(file_path):
 def check_packing(file_path):
     try:
         pe = pefile.PE(file_path)
-        print(f"🔍 분석 중: {file_path}")
+        print("\n🔍 분석 중...")
 
         packed_sections = []
         for section in pe.sections:
@@ -39,6 +76,10 @@ def check_packing(file_path):
         if packed_sections:
             print(f"⚠️ 패킹 가능성 높은 섹션 발견: {packed_sections}")
 
+            # 패킹 시그니처 확인
+            detected_packing = detect_packing_signature(file_path)
+
+            # UPX 패킹된 경우 자동 언패킹
             with open(file_path, "rb") as f:
                 data = f.read()
                 if b'UPX!' in data:
@@ -131,6 +172,7 @@ def get_imported_libraries(file_path):
 
 # 실행
 file_path = "/home/kali/Desktop/sample/lummastealer.exe"  # 분석할 PE 파일 경로
+get_file_type(file_path)
 unpacked_path = check_packing(file_path) or file_path  # 언패킹된 파일 사용
 get_file_hashes(file_path)
 check_signature(unpacked_path)
