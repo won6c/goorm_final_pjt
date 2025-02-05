@@ -36,7 +36,7 @@ def scan_file(file_path, rules):
         print(f"⚠️ 파일을 스캔하는 동안 오류가 발생했습니다: {e}")
         return False, None
 
-# 디렉토리 스캔 함수 (악성코드 탐지 확률 계산)
+# 디렉토리 스캔 함수 
 def scan_directory(directory_path, rules):
     infected_files = []
 
@@ -54,4 +54,4 @@ def scan_directory(directory_path, rules):
     else:
         print("\n✅ 악성코드가 탐지되지 않았습니다.")
 
-    return infected_files  # 감염된 파일 리스트 반환습니다.")
+    return infected_files  # 감염된 파일 리스트 반환
