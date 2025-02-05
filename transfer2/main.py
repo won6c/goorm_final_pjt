@@ -35,7 +35,7 @@ def host_to_vm1(file_path: str, config: dict) -> str:
 
 def ensure_remote_directory(vm1_config: SSHConfig, remote_dir: str):
     """
-    VM1에 SSH로 접속하여 remote_dir 디렉토리가 없으면 생성합니다.
+    VM1에 SSH로 접속하여, remote_dir 디렉토리가 없으면 생성합니다.
     """
     command = f"mkdir -p {remote_dir}"
     logging.info(f"Ensuring remote directory exists: {remote_dir}")
@@ -107,7 +107,12 @@ def main():
     parser.add_argument(
         "--script",
         default="vm1_to_vm2.py",
-        help="VM1에서 실행할 스크립트 파일 (Host PC에 있는 파일 경로, 수정 필요 시 변경)"
+        help="Host PC에 있는 VM1용 스크립트 파일 경로 (예: 'vm1_to_vm2.py'). 수정 필요 시 변경"
+    )
+    parser.add_argument(
+        "--file_transfer",
+        default="file_transfer.py",
+        help="Host PC에 있는 SFTP 전송 모듈 파일 경로 (예: 'file_transfer.py'). 수정 필요 시 변경"
     )
     args = parser.parse_args()
 
@@ -119,12 +124,12 @@ def main():
 
     file_path = args.file
 
-    # 1. Host PC에서 VM1으로 파일 전송
+    # 1. Host PC에서 VM1으로 파일 전송 (메인 파일)
     logging.info("Transferring main file from Host PC to VM1...")
     remote_file_path = host_to_vm1(file_path, config)
     logging.info(f"Main file transferred to VM1 at: {remote_file_path}")
 
-    # 2. Host PC에서 VM1에 임시 디렉토리(예: vm1_temp_dir)가 없으면 생성
+    # 2. VM1의 임시 디렉토리 확인 및 생성 (config에 vm1_temp_dir이 지정되어 있으면 사용)
     vm1_cfg = config["host_to_vm1"]
     vm1_config = SSHConfig(
         host=vm1_cfg["host"],
@@ -132,21 +137,26 @@ def main():
         username=vm1_cfg["username"],
         password=vm1_cfg["password"]
     )
-    # 임시 디렉토리: config 파일에 명시된 "vm1_temp_dir"가 있다면 사용, 없으면 기본값 설정
-    vm1_temp_dir = config.get("vm1_temp_dir", "/home/{}/temporary/".format(vm1_cfg["username"]))
+    vm1_temp_dir = config.get("vm1_temp_dir", f"/home/{vm1_cfg['username']}/temporary/")
     ensure_remote_directory(vm1_config, vm1_temp_dir)
 
-    # 3. Host PC에서 VM1으로 vm1_to_vm2.py와 config.yaml 업로드
+    # 3. Host PC에서 VM1으로 vm1_to_vm2.py, config.yaml, file_transfer.py 업로드
     remote_script_path = os.path.join(vm1_temp_dir, os.path.basename(args.script))
     remote_config_path = os.path.join(vm1_temp_dir, os.path.basename(args.config))
-    logging.info("Uploading script to VM1: " + remote_script_path)
+    remote_file_transfer_path = os.path.join(vm1_temp_dir, os.path.basename(args.file_transfer))
+    
+    logging.info("Uploading vm1_to_vm2.py to VM1: " + remote_script_path)
     upload_file_to_vm1(args.script, remote_script_path, vm1_config)
-    logging.info("Uploading config to VM1: " + remote_config_path)
+    logging.info("Uploading config.yaml to VM1: " + remote_config_path)
     upload_file_to_vm1(args.config, remote_config_path, vm1_config)
+    logging.info("Uploading file_transfer.py to VM1: " + remote_file_transfer_path)
+    upload_file_to_vm1(args.file_transfer, remote_file_transfer_path, vm1_config)
 
-    # 4. Host PC에서 VM1에 원격 명령 실행: vm1_to_vm2.py를 실행하여 VM1 -> VM2 전송
+    # 4. Host PC에서 VM1에 원격 명령 실행: 업로드한 vm1_to_vm2.py를 실행하여 VM1 → VM2 전송
     command = f"python3 {remote_script_path} --file {remote_file_path} --config {remote_config_path}"
     execute_remote_command(vm1_config, command)
+
+    # 5. (선택사항) 임시 업로드 파일 정리: 필요 시 VM1에서 임시 파일들을 삭제하는 명령을 추가할 수 있습니다.
 
 if __name__ == "__main__":
     main()
