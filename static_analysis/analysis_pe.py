@@ -2,8 +2,7 @@ import struct
 import pefile  # pip install pefile
 import subprocess
 import os
-from suspicious import suspicious_apis
-from suspicious import packing_signatures
+from suspicious import suspicious_apis, packing_signatures
 import hashlib
 import magic # pip install python-magic
 
@@ -62,7 +61,6 @@ def unpack_upx(file_path):
 def check_packing(file_path):
     try:
         pe = pefile.PE(file_path)
-        print("\n🔍 분석 중...")
 
         packed_sections = []
         for section in pe.sections:
@@ -170,10 +168,9 @@ def get_imported_libraries(file_path):
     except Exception as e:
         print(f"에러 발생: {e}")
 
-# 실행
-file_path = "/home/kali/Desktop/sample/lummastealer.exe"  # 분석할 PE 파일 경로
-get_file_type(file_path)
-unpacked_path = check_packing(file_path) or file_path  # 언패킹된 파일 사용
-get_file_hashes(file_path)
-check_signature(unpacked_path)
-get_imported_libraries(unpacked_path)
+def analyze_pe(file_path):
+    get_file_type(file_path)
+    unpacked_path = check_packing(file_path) or file_path  # 언패킹된 파일 사용
+    get_file_hashes(file_path)
+    check_signature(unpacked_path)
+    get_imported_libraries(unpacked_path)
