@@ -15,5 +15,5 @@
 
 ## yara rule refrence
 - [naxonez](https://github.com/naxonez/YaraRules)
-- [reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules/tree/develop/yara/infostealer)
+- [reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules)
 - Will be continuously modified and added...
