@@ -27,7 +27,7 @@
       {
         "event_type": "network_connection",
         "timestamp": "2025-01-17T13:03:00Z",
-        "destination_ip": "192.168.1.103",
+        "destination_ip": "192.168.1.110",
         "protocol": "TCP"
       }
     ],
@@ -46,6 +46,6 @@
         "ports_used": [80, 443]
       }
     },
-    "registry_changes": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run → rat_loader.exe"
+    "registry_changes": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run → 123rat_loader.exe"
   }
   

@@ -10,7 +10,7 @@ class SSHConfig:
         self.host = host
         self.port = port
         self.username = username
-        self.password = str(password)  # 반드시 문자열로 처리
+        self.password = str(password)
 
 def sftp_transfer(ssh_config: SSHConfig, local_path: str, remote_path: str):
     """

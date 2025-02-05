@@ -1,12 +1,10 @@
-# main.py
 import os
 import sys
 import argparse
 import logging
 import yaml
-
+import paramiko
 from file_transfer import SSHConfig, sftp_transfer
-from elk_sender import send_json_to_elk
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -14,12 +12,15 @@ def load_config(config_file: str):
     if not os.path.exists(config_file):
         raise FileNotFoundError(f"Config file not found: {config_file}")
     with open(config_file, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        config = yaml.safe_load(f)
+    if config is None:
+        raise ValueError(f"Config file {config_file} is empty or invalid.")
+    logging.info(f"Config loaded: {config}")
+    return config
 
-# 역할별 전송 기능
-def host_to_vm1(file_path: str, config: dict):
+def host_to_vm1(file_path: str, config: dict) -> str:
     """
-    Host PC에서 파일 A(악성코드 샘플)를 Guest VM1(우분투)로 전송
+    Host PC에서 파일을 VM1으로 전송하고, VM1에 저장된 파일 경로를 반환합니다.
     """
     vm1_cfg = config["host_to_vm1"]
     vm1_config = SSHConfig(
@@ -28,67 +29,85 @@ def host_to_vm1(file_path: str, config: dict):
         username=vm1_cfg["username"],
         password=vm1_cfg["password"]
     )
-    # remote_path는 설정된 디렉토리에 파일 이름을 추가
-    remote_path = os.path.join(vm1_cfg["remote_path"], os.path.basename(file_path))
-    sftp_transfer(vm1_config, file_path, remote_path)
+    remote_file_path = os.path.join(vm1_cfg["remote_path"], os.path.basename(file_path))
+    sftp_transfer(vm1_config, file_path, remote_file_path)
+    return remote_file_path
 
-def vm1_to_vm2(file_path: str, config: dict):
+def ensure_remote_directory(vm1_config: SSHConfig, remote_dir: str):
     """
-    Guest VM1(우분투)에서 파일 A를 Guest VM2(윈도우)로 전송
+    VM1에 SSH로 접속하여 remote_dir 디렉토리가 없으면 생성합니다.
     """
-    vm2_cfg = config["vm1_to_vm2"]
-    vm2_config = SSHConfig(
-        host=vm2_cfg["host"],
-        port=vm2_cfg["port"],
-        username=vm2_cfg["username"],
-        password=vm2_cfg["password"]
-    )
-    # Windows 경로는 보통 슬래시(/) 사용 시에도 동작하거나, 별도 경로 구분자 사용
-    remote_path = os.path.join(vm2_cfg["remote_path"], os.path.basename(file_path))
-    sftp_transfer(vm2_config, file_path, remote_path)
+    command = f"mkdir -p {remote_dir}"
+    logging.info(f"Ensuring remote directory exists: {remote_dir}")
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(
+            hostname=vm1_config.host,
+            port=vm1_config.port,
+            username=vm1_config.username,
+            password=vm1_config.password
+        )
+        stdin, stdout, stderr = client.exec_command(command)
+        stdout.channel.recv_exit_status()  # 명령어 종료까지 대기
+        logging.info("Remote directory ensured.")
+    except Exception as e:
+        logging.error(f"Error ensuring remote directory: {e}")
+        raise
+    finally:
+        client.close()
 
-def vm2_to_vm1(json_path: str, config: dict):
+def upload_file_to_vm1(local_path: str, remote_path: str, vm1_config: SSHConfig):
     """
-    Guest VM2(윈도우)에서 분석 보고서(JSON)를 Guest VM1(우분투)로 전송
+    Host PC에서 VM1으로 파일을 업로드합니다.
     """
-    vm1_cfg = config["vm2_to_vm1"]
-    vm1_config = SSHConfig(
-        host=vm1_cfg["host"],
-        port=vm1_cfg["port"],
-        username=vm1_cfg["username"],
-        password=vm1_cfg["password"]
-    )
-    remote_path = os.path.join(vm1_cfg["remote_path"], os.path.basename(json_path))
-    sftp_transfer(vm1_config, json_path, remote_path)
+    sftp_transfer(vm1_config, local_path, remote_path)
 
-def vm1_send_to_elk(json_path: str, config: dict):
+def execute_remote_command(vm1_config: SSHConfig, command: str):
     """
-    Guest VM1에서 분석 보고서(JSON)를 AWS ELK로 전송
+    VM1에 SSH로 접속하여 원격 명령을 실행합니다.
     """
-    elk_cfg = config["elk"]
-    endpoint = elk_cfg["endpoint"]
-    headers = elk_cfg.get("headers")
-    send_json_to_elk(json_path, endpoint, headers)
+    logging.info(f"Executing remote command on VM1: {command}")
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(
+            hostname=vm1_config.host,
+            port=vm1_config.port,
+            username=vm1_config.username,
+            password=vm1_config.password
+        )
+        stdin, stdout, stderr = client.exec_command(command)
+        output = stdout.read().decode("utf-8").strip()
+        errors = stderr.read().decode("utf-8").strip()
+        logging.info("Remote command output: " + output)
+        if errors:
+            logging.error("Remote command errors: " + errors)
+        else:
+            logging.info("Remote command executed successfully.")
+    except Exception as e:
+        logging.error(f"Error executing remote command on VM1: {e}")
+    finally:
+        client.close()
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Malware Analysis Automation: Multi-hop File Transfer & Analysis Report Processing using config file."
-    )
-    parser.add_argument(
-        "--role",
-        choices=["host", "vm1", "vm2"],
-        required=True,
-        help="현재 머신의 역할: host (Host PC), vm1 (Guest Ubuntu), vm2 (Guest Windows)"
+        description="Host PC: Transfer file to VM1 and instruct VM1 to transfer file to VM2."
     )
     parser.add_argument(
         "--file",
         required=True,
-        help="전송할 파일 경로 (악성코드 샘플 또는 분석 보고서 JSON 파일)"
+        help="전송할 파일 경로 (예: 'D:/path/to/your/file.json')"
     )
     parser.add_argument(
         "--config",
         default="config.yaml",
         help="설정 파일 경로 (default: config.yaml)"
+    )
+    parser.add_argument(
+        "--script",
+        default="vm1_to_vm2.py",
+        help="VM1에서 실행할 스크립트 파일 (Host PC에 있는 파일 경로, 수정 필요 시 변경)"
     )
     args = parser.parse_args()
 
@@ -100,23 +119,34 @@ def main():
 
     file_path = args.file
 
-    if args.role == "host":
-        logging.info("Role: host → Host PC에서 Guest VM1으로 파일 전송")
-        host_to_vm1(file_path, config)
-    elif args.role == "vm1":
-        # vm1에서는 파일 A라면 vm1→vm2 전송, JSON 파일이면 AWS ELK 전송
-        if file_path.lower().endswith(".json"):
-            logging.info("Role: vm1 → 분석 보고서(JSON)를 AWS ELK로 전송")
-            vm1_send_to_elk(file_path, config)
-        else:
-            logging.info("Role: vm1 → 파일 A를 Guest VM2로 전송")
-            vm1_to_vm2(file_path, config)
-    elif args.role == "vm2":
-        logging.info("Role: vm2 → 분석 보고서(JSON)를 Guest VM1으로 전송")
-        vm2_to_vm1(file_path, config)
-    else:
-        logging.error("Invalid role specified.")
-        sys.exit(1)
+    # 1. Host PC에서 VM1으로 파일 전송
+    logging.info("Transferring main file from Host PC to VM1...")
+    remote_file_path = host_to_vm1(file_path, config)
+    logging.info(f"Main file transferred to VM1 at: {remote_file_path}")
+
+    # 2. Host PC에서 VM1에 임시 디렉토리(예: vm1_temp_dir)가 없으면 생성
+    vm1_cfg = config["host_to_vm1"]
+    vm1_config = SSHConfig(
+        host=vm1_cfg["host"],
+        port=vm1_cfg["port"],
+        username=vm1_cfg["username"],
+        password=vm1_cfg["password"]
+    )
+    # 임시 디렉토리: config 파일에 명시된 "vm1_temp_dir"가 있다면 사용, 없으면 기본값 설정
+    vm1_temp_dir = config.get("vm1_temp_dir", "/home/{}/temporary/".format(vm1_cfg["username"]))
+    ensure_remote_directory(vm1_config, vm1_temp_dir)
+
+    # 3. Host PC에서 VM1으로 vm1_to_vm2.py와 config.yaml 업로드
+    remote_script_path = os.path.join(vm1_temp_dir, os.path.basename(args.script))
+    remote_config_path = os.path.join(vm1_temp_dir, os.path.basename(args.config))
+    logging.info("Uploading script to VM1: " + remote_script_path)
+    upload_file_to_vm1(args.script, remote_script_path, vm1_config)
+    logging.info("Uploading config to VM1: " + remote_config_path)
+    upload_file_to_vm1(args.config, remote_config_path, vm1_config)
+
+    # 4. Host PC에서 VM1에 원격 명령 실행: vm1_to_vm2.py를 실행하여 VM1 -> VM2 전송
+    command = f"python3 {remote_script_path} --file {remote_file_path} --config {remote_config_path}"
+    execute_remote_command(vm1_config, command)
 
 if __name__ == "__main__":
     main()
