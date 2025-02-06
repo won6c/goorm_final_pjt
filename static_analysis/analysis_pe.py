@@ -112,6 +112,8 @@ def get_file_hashes(file_path):
         print("\n🔍 [파일 해시값]")
         for name, algo in hashes.items():
             print(f"  {name}: {algo.hexdigest()}")
+        
+        return {name: algo.hexdigest() for name, algo in hashes.items()}  # 해시값 반환
 
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다. 파일 경로를 확인하세요.")
