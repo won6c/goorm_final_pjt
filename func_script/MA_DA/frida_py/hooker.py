@@ -21,7 +21,8 @@ def on_message(message, data):
             time_str = match.group("time")
             dll = match.group("dll")
             func = match.group("function")
-            log_messages[time_str]=[]
+            if time_str not in log_messages:
+                log_messages[time_str] = []
             log_messages[time_str].append({"DLL": dll, "function": func})
     else:
         #print(message)
