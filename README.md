@@ -1,5 +1,8 @@
 # Malware Analysis Automation
-..
+```
+cd static_analysis
+python main.py
+```
 
 ## static analysis checklist
 ### upx install
