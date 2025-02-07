@@ -2,8 +2,6 @@ import frida
 import sys
 import time
 import os
-import subprocess
-import psutil
 import re
 from common import stop_event
 
