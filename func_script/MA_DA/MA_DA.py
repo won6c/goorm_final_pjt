@@ -24,11 +24,10 @@ def signal_threads_to_stop():
 def process():
     file = os.path.join(os.getcwd(), "frida_py", "04.exe")
 
-    #before_capture = capture()
+    before_capture = capture()
     process_time = time.time()
     with ThreadPoolExecutor(max_workers=3) as executor: # 함수를 추가할 수록 max_workers의 값을 추가하는 함수의 개수만큼 추가해야 함
         future_process_list = executor.submit(process_list)
-        print("start")
         time.sleep(5)
         pid = spawn_frida_to_process(file)
 
@@ -53,9 +52,9 @@ def process():
         "process_dll": result_dll
     }
 
-    #after_capture = capture()
-    #reg_result = process_reg(before_capture=before_capture, after_capture=after_capture)
-    #result_dict[process_reg.__name__]=reg_result
+    after_capture = capture()
+    reg_result = process_reg(before_capture=before_capture, after_capture=after_capture)
+    result_dict[process_reg.__name__]=reg_result
     print("각 스레드의 결과값:")
     for func, res in result_dict.items():
         print(f"{func} -> {res}")

@@ -65,5 +65,4 @@ def process_frida(session):
         print(e)
         session.detach()
         print("\n[*] Detaching...")
-    print("api")
     return {"API Hooking":log_messages}

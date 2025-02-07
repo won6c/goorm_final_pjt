@@ -97,6 +97,5 @@ def process_list():
         except Exception as e:
             print(f"오류 발생: {e}")
             break
-    print("process")
     pythoncom.CoUninitialize()
     return {"process":process_result}

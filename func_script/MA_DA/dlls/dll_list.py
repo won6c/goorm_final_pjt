@@ -30,6 +30,5 @@ def monitor_process(pid):
 def process_dll(pid):
     file_path = "C:\\\Program Files\\Bandizip\\Bandizip.exe"
     dlls = monitor_process(pid)
-    print("dll")
     return {"dll":dlls}
 
