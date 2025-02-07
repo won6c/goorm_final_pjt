@@ -1,0 +1,608 @@
+{
+    "process_list": {
+        "process": {
+            "04.exe": {
+                "Caption": "04.exe",
+                "CommandLine": "\\\"C:\\\\Users\\\\User\\\\Desktop\\\\test\\\\func_script\\\\frida_py\\\\04.exe\\\"",
+                "CreationDate": "20250207061330.511557-480",
+                "CSName": "WINDEV2407EVAL",
+                "Description": "04.exe",
+                "KernelModeTime": "0",
+                "Name": "Win32_Process",
+                "OtherOperationCount": "0",
+                "OtherTransferCount": "0",
+                "ProcessId": "1304",
+                "ReadOperationCount": "0",
+                "ReadTransferCount": "0",
+                "VirtualSize": "5742592",
+                "WriteOperationCount": "0",
+                "WriteTransferCount": "0"
+            },
+            "conhost.exe": {
+                "Caption": "conhost.exe",
+                "CommandLine": "\\\\??\\\\C:\\\\Windows\\\\system32\\\\conhost.exe 0x4",
+                "CreationDate": "20250207061330.802649-480",
+                "CSName": "WINDEV2407EVAL",
+                "Description": "conhost.exe",
+                "ExecutablePath": "C:\\\\Windows\\\\system32\\\\conhost.exe",
+                "KernelModeTime": "156250",
+                "Name": "Win32_Process",
+                "OtherOperationCount": "87",
+                "OtherTransferCount": "4346",
+                "ProcessId": "4116",
+                "ReadOperationCount": "12",
+                "ReadTransferCount": "1544",
+                "VirtualSize": "2203472527360",
+                "WriteOperationCount": "0",
+                "WriteTransferCount": "0"
+            }
+        }
+    },
+    "process_frida": {
+        "API Hooking": {
+            "2025-02-07T14:13:32.960Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:34.812Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:34.820Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:35.890Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:35.910Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:38.829Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:38.871Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:40.477Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "IsDebuggerPresent"
+                }
+            ],
+            "2025-02-07T14:13:40.497Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:40.513Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:40.517Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:42.789Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "IsDebuggerPresent"
+                }
+            ],
+            "2025-02-07T14:13:42.794Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:42.807Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:44.364Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:44.380Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:45.557Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:47.415Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:47.434Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:49.169Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:49.181Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:51.100Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:51.111Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:52.175Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:53.221Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:54.281Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:55.753Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "IsDebuggerPresent"
+                }
+            ],
+            "2025-02-07T14:13:55.757Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:13:55.770Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:56.823Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:13:58.854Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:13:58.869Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:00.205Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:00.220Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:00.237Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:01.660Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:01.675Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:02.629Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:03.581Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:03.692Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:03.705Z": [
+                {
+                    "DLL": "WS2_32.dll",
+                    "function": "WSASetLastError"
+                }
+            ],
+            "2025-02-07T14:14:03.706Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:03.737Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:03.750Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:03.751Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "TlsGetValue"
+                }
+            ],
+            "2025-02-07T14:14:05.085Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:05.089Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:06.349Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:06.364Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:08.211Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:08.223Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:08.226Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:09.327Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:09.341Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:10.758Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "IsDebuggerPresent"
+                }
+            ],
+            "2025-02-07T14:14:10.760Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:10.771Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:11.651Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:11.665Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:12.552Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:12.562Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:12.564Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:14.109Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:14.122Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:14.135Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:15.675Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:15.698Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:16.637Z": [
+                {
+                    "DLL": "RPCRT4.dll",
+                    "function": "I_RpcPauseExecution"
+                }
+            ],
+            "2025-02-07T14:14:16.650Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:17.421Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:18.264Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:19.186Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:19.198Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:19.968Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:21.187Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:21.198Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:22.807Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:22.820Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:22.832Z": [
+                {
+                    "DLL": "gdi32full.dll",
+                    "function": "EngAcquireSemaphore"
+                }
+            ],
+            "2025-02-07T14:14:22.845Z": [
+                {
+                    "DLL": "GDI32.dll",
+                    "function": "EngReleaseSemaphore"
+                }
+            ],
+            "2025-02-07T14:14:22.856Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "SetLastError"
+                }
+            ],
+            "2025-02-07T14:14:22.859Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WTSGetServiceSessionId"
+                }
+            ],
+            "2025-02-07T14:14:22.871Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "TlsGetValue"
+                }
+            ],
+            "2025-02-07T14:14:22.883Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "TlsGetValue"
+                }
+            ],
+            "2025-02-07T14:14:23.594Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:24.907Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:24.918Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:25.658Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:25.666Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "Sleep"
+                }
+            ],
+            "2025-02-07T14:14:25.670Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "SleepEx"
+                }
+            ],
+            "2025-02-07T14:14:27.653Z": [
+                {
+                    "DLL": "KERNELBASE.dll",
+                    "function": "WriteFile"
+                }
+            ],
+            "2025-02-07T14:14:27.664Z": [
+                {
+                    "DLL": "KERNEL32.DLL",
+                    "function": "Sleep"
+                }
+            ]
+        }
+    },
+    "process_dll": {
+        "dll": [
+            "C:\\Users\\User\\Desktop\\test\\func_script\\frida_py\\04.exe",
+            "C:\\Windows\\System32\\wow64cpu.dll",
+            "C:\\Windows\\System32\\wow64base.dll",
+            "C:\\Windows\\System32\\wow64con.dll",
+            "C:\\Windows\\System32\\wow64.dll",
+            "C:\\Windows\\SYSTEM32\\ntdll.dll",
+            "C:\\Windows\\System32\\wow64win.dll"
+        ]
+    }
+}
