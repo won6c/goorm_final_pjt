@@ -30,7 +30,7 @@ def main():
     user_input = input("\n🔎 바이러스토탈(VirusTotal) 검사를 진행할까요? (yes/no): ").strip().lower()
     if user_input == "yes":
         print("\n🔍 바이러스토탈 검사 실행 중...")
-        vt_script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "virusTotalAPI.py"))
+        vt_script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "virusTotalAPI.py"))
         subprocess.run(["python", vt_script_path, scan_folder]) 
 
 if __name__ == "__main__":

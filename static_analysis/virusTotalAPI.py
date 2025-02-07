@@ -3,16 +3,13 @@ import requests
 import json
 import sys
 import os
-
-# static_analysis 폴더 경로 추가
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "static_analysis")))
 from analysis_pe import get_file_hashes # 해시값 불러오기
 from main import scan_folder # 검사할 파일 경로 가져오기
 
 # API 키 로드
 def load_api_key_from_config(): # config_path="./config.ini"
     script_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트 위치
-    config_path = os.path.join(script_dir, "config.ini") # 절대 경로 설정
+    config_path = os.path.join(script_dir, "..", "config.ini") # 절대 경로 설정
 
     config = configparser.ConfigParser()
     config.read(config_path)
@@ -106,7 +103,7 @@ def scan_files(scan_folder_arg = None):
         results[file_path] = vt_result
 
     # JSON 파일 저장
-    output_dir = os.path.join(os.path.dirname(__file__), "OUTPUT") # OUTPUT 폴더 경로
+    output_dir = os.path.join(os.path.dirname(__file__), "..", "OUTPUT") # OUTPUT 폴더 경로
     os.makedirs(output_dir, exist_ok=True) # 폴더 없으면 생성
 
     file_name = os.path.basename(file_path)
