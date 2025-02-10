@@ -1,0 +1,25 @@
+2025-02-07 14:18:22,965 - INFO - 파일 감시 시작: ./monitor
+2025-02-07 14:18:43,542 - INFO - 파일 백업 완료: ./backup\test_document.docx_20250207_141843.bak
+2025-02-07 14:18:43,579 - INFO - 파일 백업 완료: ./backup\test_image.jpg_20250207_141843.bak
+2025-02-07 14:18:43,579 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_141843.bak
+2025-02-07 14:18:43,600 - INFO - 파일 백업 완료: ./backup\test_script.py_20250207_141843.bak
+2025-02-07 14:18:49,005 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_141849.bak
+2025-02-07 14:20:27,897 - INFO - 파일 감시 시작: ./monitor
+2025-02-07 14:20:40,459 - DEBUG - 파일 변경 감지됨: ./monitor\test_text.txt
+2025-02-07 14:20:40,484 - DEBUG - 변경된 파일 크기: 0 bytes
+2025-02-07 14:20:40,486 - DEBUG - 백업할 파일 경로: ./backup\test_text.txt_20250207_142040.bak
+2025-02-07 14:20:40,573 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_142040.bak
+2025-02-07 14:20:40,595 - DEBUG - 파일 변경 감지됨: ./monitor\test_text.txt
+2025-02-07 14:20:40,603 - DEBUG - 변경된 파일 크기: 1024 bytes
+2025-02-07 14:20:40,611 - DEBUG - 백업할 파일 경로: ./backup\test_text.txt_20250207_142040.bak
+2025-02-07 14:20:40,611 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_142040.bak
+2025-02-07 14:22:32,266 - INFO - 파일 감시 시작: ./monitor
+2025-02-07 14:22:36,273 - DEBUG - 파일 변경 감지됨: ./monitor\test_text.txt
+2025-02-07 14:22:36,279 - DEBUG - 변경된 파일 크기: 0 bytes
+2025-02-07 14:22:36,291 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_142236.bak
+2025-02-07 14:22:36,291 - DEBUG - 파일 변경 감지됨: ./monitor\test_text.txt
+2025-02-07 14:22:36,291 - DEBUG - 변경된 파일 크기: 1024 bytes
+2025-02-07 14:22:36,314 - INFO - 파일 백업 완료: ./backup\test_text.txt_20250207_142236.bak
+2025-02-07 14:27:25,259 - DEBUG - 파일 변경 감지됨: ./monitor\test_document.json
+2025-02-07 14:27:25,284 - DEBUG - 변경된 파일 크기: 24 bytes
+2025-02-07 14:27:25,289 - INFO - 파일 백업 완료: ./backup\test_document.json_20250207_142725.bak
