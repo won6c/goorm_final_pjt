@@ -2,5 +2,8 @@ __pycache__
 config.ini
 /OUTPUT
 *.json
+
+# 모든 파일 무시
 Malware_sample/*
-!Malware_sample/.gitkeep
+# 폴더 자체는 예외 처리
+!Malware_sample/
