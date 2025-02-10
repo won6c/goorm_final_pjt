@@ -1,11 +1,28 @@
 # config.yaml
+# 모든 접속 정보와 기본 경로를 포함합니다.
+# 사용자는 필요한 부분만 수정하면 됩니다.
 
-ssh:
-  host: 222.114.170.35
+# Host PC에서 VM1(우분투)로 전송 설정
+host_to_vm1:
+  host: "IP"            # 실제 값으로 수정할 것
   port: 22
-  username: pyh
-  password: '1234'
+  username: "vm1"              # VM1 로그인 사용자 (수정 필요)
+  password: "pass"          # VM1 로그인 비밀번호 (수정 필요)
+  remote_path: "/home/vm1/Desktop/"  # VM1에 파일이 저장될 기본 경로 (수정 가능)
 
-transfer:
-  local_path: D:\goorm\FinalProject\goorm_final_pjt\transfer\test.txt
-  remote_path: /home/pyh/Desktop/test.txt
+# VM1에서 VM2(윈도우)로 전송 설정
+vm1_to_vm2:
+  host: "vm2ip"                # 실제 값으로 수정할 것
+  port: 22
+  username: "vm2"              # VM2 로그인 사용자 (수정 필요)
+  password: "vm2pass"          # VM2 로그인 비밀번호 (수정 필요)
+  remote_path: "/home/vm2/Desktop/"       # VM2에 파일이 저장될 기본 경로 (수정 가능)
+
+# VM1에서 임시 파일(스크립트, 설정 파일 등)을 저장할 디렉토리
+vm1_temp_dir: "/home/vm1/temporary/"  # 없으면 자동 생성됨
+
+# ELK 전송 설정 (elk_sender.py에서 사용)
+elk:
+  endpoint: "http://3.36.50.236:9200/malware_analysis-2025.02.02/_doc" # 수정예정
+  headers:
+    Content-Type: "application/json"
