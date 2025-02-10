@@ -6,7 +6,7 @@ import subprocess
 #print(os.listdir())
 
 # 검사할 디렉토리 경로
-scan_folder = "/home/kali/Desktop/sample"
+scan_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../Malware_sample"))
 
 def main():
     # YARA 룰 로드

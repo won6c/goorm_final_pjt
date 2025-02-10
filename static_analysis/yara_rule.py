@@ -2,8 +2,15 @@ import yara
 import os
 import glob
 
+# main.py 자신이 있는 폴더 경로
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# main.py와 같은 레벨의 상위 폴더에 YARA_RULE이 있다면
+rule_folder_path = os.path.join(BASE_DIR, "..", "YARA_RULE")
+rule_folder_path = os.path.abspath(rule_folder_path)
+
 # YARA Rules가 있는 폴더 경로
-rule_folder_path = "../YARA_RULE"
+#rule_folder_path = "../YARA_RULE"
 
 # YARA 룰 파일 로드 함수
 def load_yara_rules(rule_folder):
