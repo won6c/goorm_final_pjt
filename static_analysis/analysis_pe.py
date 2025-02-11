@@ -5,6 +5,7 @@ import os
 from suspicious import suspicious_apis, packing_signatures
 import hashlib
 import magic # pip install python-magic
+import json
 
 # 파일 타입 확인
 def get_file_type(file_path):
@@ -15,9 +16,9 @@ def get_file_type(file_path):
         with open(file_path, "rb") as f:
             file_type = magic.from_buffer(f.read(2048), mime=True)
         extension = os.path.splitext(file_path)[1]  # 파일 확장자 추출
-        print(f"📄 파일: {file_path}\n📂 확장자: {extension}\n🔍 MIME 타입: {file_type}")
+        return {"file": file_path, "extension": extension, "mime_type": file_type}
     except Exception as e:
-        print(f"에러 발생: {e}")
+        return {"error": str(e)}
 
 # 패킹 시그니처 확인
 def detect_packing_signature(file_path):
@@ -61,7 +62,6 @@ def unpack_upx(file_path):
 def check_packing(file_path):
     try:
         pe = pefile.PE(file_path)
-
         packed_sections = []
         for section in pe.sections:
             section_name = section.Name.decode().strip("\x00")
@@ -107,14 +107,8 @@ def get_file_hashes(file_path):
         with open(file_path, "rb") as f:
             while chunk := f.read(4096):
                 for algo in hashes.values():
-                    algo.update(chunk)
-
-        print("\n🔍 [파일 해시값]")
-        for name, algo in hashes.items():
-            print(f"  {name}: {algo.hexdigest()}")
-        
+                    algo.update(chunk)        
         return {name: algo.hexdigest() for name, algo in hashes.items()}  # 해시값 반환
-
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다. 파일 경로를 확인하세요.")
     except Exception as e:
@@ -137,8 +131,9 @@ def check_signature(file_path):
                 print("유효한 PE(Signature) 헤더가 아닙니다.")
                 return
             
-            print(f"✅ MZ Signature 확인됨! (0x{mz_signature.hex().upper()})")
-            print(f"✅ PE Signature 확인됨! (0x{pe_signature.hex().upper()}) at offset 0x{pe_offset:X}")
+            print(f"\n✅ MZ Signature 확인됨!")
+            print(f"✅ PE Signature 확인됨!")
+            return {"MZ_signature": mz_signature.hex().upper(), "PE_signature": pe_signature.hex().upper(), "PE_offset": f"0x{pe_offset:X}"}
     
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다. 파일 경로를 확인하세요.")
@@ -149,30 +144,45 @@ def check_signature(file_path):
 def get_imported_libraries(file_path):
     try:
         pe = pefile.PE(file_path)
-        print("\n🔍 [Import된 라이브러리(DLL) 및 함수 목록]")
+        imported_libs = {}
 
         if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
             for entry in pe.DIRECTORY_ENTRY_IMPORT:
-                dll_name = entry.dll.decode()
-                print(f"📂 {dll_name}")
-                
-                for imp in entry.imports:
-                    func_name = imp.name.decode() if imp.name else "Ordinal_" + str(imp.ordinal)
-                    if func_name in suspicious_apis:
-                        print(f"    └ 🚨 {func_name} (의심됨)")
-                    else:
-                        print(f"    └ {func_name}")
+                dll_name = f"📂{entry.dll.decode()}"
+                functions = [imp.name.decode() if imp.name else f"Ordinal_{imp.ordinal}" for imp in entry.imports]
+                imported_libs[dll_name] = {
+                    "🚨suspicious🚨(의심됨)": [func for func in functions if func in suspicious_apis],
+                    "functions": functions
+                }
         else:
             print("⚠️ Import Table이 없습니다. (패킹되었을 가능성 있음)")
+        
+        return imported_libs
     
     except pefile.PEFormatError:
         print("유효한 PE 파일이 아닙니다.")
     except Exception as e:
-        print(f"에러 발생: {e}")
+        return {"error": str(e)}
 
 def analyze_pe(file_path):
     get_file_type(file_path)
     unpacked_path = check_packing(file_path) or file_path  # 언패킹된 파일 사용
     get_file_hashes(file_path)
-    check_signature(unpacked_path)
+    # check_signature(unpacked_path)
     get_imported_libraries(unpacked_path)
+
+    result = {
+        "file_type": get_file_type(file_path),
+        "hashes": get_file_hashes(file_path),
+        "pe_signature": check_signature(file_path),
+        "imported_libraries": get_imported_libraries(file_path),
+    }
+
+    # JSON 파일 저장
+    output_dir = os.path.join(os.path.dirname(__file__), "..", "OUTPUT") # OUTPUT 폴더 경로
+    os.makedirs(output_dir, exist_ok=True) # 폴더 없으면 생성
+    output_file = os.path.join(output_dir, f"{os.path.basename(file_path)}_analysis.json")
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=4, ensure_ascii=False)
+    print(f"\n✅ 분석 완료: {output_file}")
