@@ -63,14 +63,21 @@ def check_packing(file_path):
     try:
         pe = pefile.PE(file_path)
         packed_sections = []
+        entropy_result = []
+
         for section in pe.sections:
             section_name = section.Name.decode().strip("\x00")
             entropy = section.get_entropy()
-            print(f"  [섹션] {section_name} - 크기: {section.SizeOfRawData} 바이트, 엔트로피: {entropy:.2f}")
+            
+            entropy_result.append({
+                "section_name": section_name,
+                "size": section.SizeOfRawData,
+                "entropy": round(entropy, 2)
+            })
 
             if "UPX" in section_name.upper() or entropy > 7.5:
                 packed_sections.append(section_name)
-
+    
         if packed_sections:
             print(f"⚠️ 패킹 가능성 높은 섹션 발견: {packed_sections}")
 
@@ -89,16 +96,18 @@ def check_packing(file_path):
 
         if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
             num_imports = sum(len(entry.imports) for entry in pe.DIRECTORY_ENTRY_IMPORT)
-            print(f"  Import된 함수 개수: {num_imports}")
+            # print(f"  Import된 함수 개수: {num_imports}")
             if num_imports < 5:
                 print("⚠️ Import된 함수 개수가 적어 패킹 가능성이 있음!")
+
+        return entropy_result
     
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다.")
     except pefile.PEFormatError:
         print("유효한 PE 파일이 아닙니다.")
     except Exception as e:
-        print(f"에러 발생: {e}")
+        return {"error": str(e)}
 
 # 해시값 확인
 def get_file_hashes(file_path):
@@ -151,6 +160,7 @@ def get_imported_libraries(file_path):
                 dll_name = f"📂{entry.dll.decode()}"
                 functions = [imp.name.decode() if imp.name else f"Ordinal_{imp.ordinal}" for imp in entry.imports]
                 imported_libs[dll_name] = {
+                    "total_imported_libs": len(functions),
                     "🚨suspicious🚨(의심됨)": [func for func in functions if func in suspicious_apis],
                     "functions": functions
                 }
@@ -166,13 +176,14 @@ def get_imported_libraries(file_path):
 
 def analyze_pe(file_path):
     get_file_type(file_path)
-    unpacked_path = check_packing(file_path) or file_path  # 언패킹된 파일 사용
+    unpacked_path = check_packing(file_path) or file_path # 언패킹된 파일 사용
     get_file_hashes(file_path)
     # check_signature(unpacked_path)
     get_imported_libraries(unpacked_path)
 
     result = {
         "file_type": get_file_type(file_path),
+        "sections" : check_packing(file_path),
         "hashes": get_file_hashes(file_path),
         "pe_signature": check_signature(file_path),
         "imported_libraries": get_imported_libraries(file_path),
