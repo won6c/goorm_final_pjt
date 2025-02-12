@@ -9,7 +9,7 @@ from file_transfer import SSHConfig, sftp_transfer
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# 기본적으로 사용할 파이썬 인터프리터 명령어를 "python3"로 지정합니다.
+# 기본적으로 사용할 파이썬 인터프리터 명령어 (리눅스 환경에서 python3는 올바른 Python 3.x를 가리킴)
 PYTHON_INTERPRETER = "python3"
 
 def load_config(config_file: str):
@@ -199,8 +199,9 @@ def main():
     logging.info(f"Uploading file_transfer.py to {remote_file_transfer}")
     upload_file_to_vm1(args.file_transfer, remote_file_transfer, vm1_config)
 
-    # 7) Run vm1_to_vm2.py on VM1 using the default python interpreter
-    command = f"{remote_script} --file {remote_file_path} --config {remote_config_path}"
+    # 7) Run vm1_to_vm2.py on VM1 using the default python interpreter.
+    # vm1_to_vm2.py expects: local_file [--config CONFIG]
+    command = f"{remote_script} {remote_file_path} --config {remote_config_path}"
     execute_remote_command(vm1_config, command, PYTHON_INTERPRETER)
 
 if __name__ == "__main__":
