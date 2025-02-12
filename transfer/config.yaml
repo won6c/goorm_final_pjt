@@ -23,6 +23,13 @@ vm1_temp_dir: "/home/vm1/temporary/"  # 없으면 자동 생성됨
 
 # ELK 전송 설정 (elk_sender.py에서 사용)
 elk:
-  endpoint: "http://3.36.50.236:9200/malware_analysis-2025.02.02/_doc" # 수정예정
+  elasticsearch_url: "http://3.36.50.236:9200"
+  kibana_url: "http://3.36.50.236:5601"
+
+  index_name: "malware-analysis-*"
+  index_pattern_title: "malware-analysis-*"
+  data_view_id: "malware-data-view"
+
   headers:
+    kbn-xsrf: "true"
     Content-Type: "application/json"
