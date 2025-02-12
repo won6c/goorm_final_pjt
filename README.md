@@ -1,5 +1,5 @@
 # Malware Analysis Automation 
-- Satic Analysis Automation 
+- Static Analysis Automation 
 ## Usage Guide
 - Add the file to the Malware_sample folder
 ```
