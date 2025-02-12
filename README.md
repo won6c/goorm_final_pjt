@@ -1,10 +1,10 @@
 # Malware Analysis Automation 
 - Satic Analysis Automation 
 ## Usage Guide
+- Add the file to the Malware_sample folder
 ```
-1. Add the file to the Malware_sample folder
-2. cd static_analysis (Path movement)
-3. python main.py (Run)
+cd static_analysis (Path movement)
+python main.py (Run)
 ```
 
 ## static analysis checklist
