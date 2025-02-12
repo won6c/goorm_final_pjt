@@ -9,6 +9,9 @@ from file_transfer import SSHConfig, sftp_transfer
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
+# 기본적으로 사용할 파이썬 인터프리터 명령어를 "python3"로 지정합니다.
+PYTHON_INTERPRETER = "python3"
+
 def load_config(config_file: str):
     """Load configuration from a YAML file."""
     if not os.path.exists(config_file):
@@ -17,22 +20,21 @@ def load_config(config_file: str):
         config = yaml.safe_load(f)
     if config is None:
         raise ValueError(f"Config file {config_file} is empty or invalid.")
-    logging.info(f"Config loaded: {config}")
     return config
 
-def ensure_vm1_dependencies(vm1_config):
+def ensure_vm1_dependencies(vm1_config, python_interpreter: str):
     """
-    On VM1, check if python3.10 with needed libraries (_cffi_backend, yaml, etc.) is installed.
+    On VM1, check if the specified python interpreter with needed libraries (_cffi_backend, yaml, etc.) is installed.
     If not, install them using apt-get and pip.
     """
-    check_command = "python3.10 -c 'import _cffi_backend, yaml'"
+    check_command = f"{python_interpreter} -c 'import _cffi_backend, yaml'"
     install_command = (
         f"echo {vm1_config.password} | sudo -S apt-get update -y && "
         f"echo {vm1_config.password} | sudo -S apt-get install -y python3-pip python3-cffi && "
-        "python3.10 -m pip install --upgrade pip paramiko cryptography cffi pyyaml"
+        f"{python_interpreter} -m pip install --upgrade pip paramiko cryptography cffi pyyaml"
     )
 
-    logging.info("Checking VM1 for required Python dependencies with python3.10...")
+    logging.info(f"Checking VM1 for required Python dependencies using {python_interpreter}...")
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
@@ -45,7 +47,7 @@ def ensure_vm1_dependencies(vm1_config):
         stdin, stdout, stderr = client.exec_command(check_command)
         exit_status = stdout.channel.recv_exit_status()
         if exit_status == 0:
-            logging.info("Required Python dependencies already installed on VM1.")
+            logging.info("Required Python dependencies are already installed on VM1.")
         else:
             logging.info("Dependencies not found. Installing on VM1...")
             stdin2, stdout2, stderr2 = client.exec_command(install_command)
@@ -104,15 +106,16 @@ def ensure_remote_directory(vm1_config, remote_dir: str):
 
 def upload_file_to_vm1(local_path: str, remote_path: str, vm1_config: SSHConfig):
     """
-    Upload a file from Host to VM1.
+    Upload a file from Host to VM1 using SFTP.
     """
     sftp_transfer(vm1_config, local_path, remote_path)
 
-def execute_remote_command(vm1_config, command: str):
+def execute_remote_command(vm1_config, command: str, python_interpreter: str):
     """
-    Execute the given command on VM1 using python3.10.
+    Execute the given command on VM1 using the specified python interpreter.
     """
-    logging.info(f"Executing remote command on VM1: {command}")
+    full_command = f"{python_interpreter} {command}"
+    logging.info(f"Executing remote command on VM1: {full_command}")
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
@@ -122,7 +125,7 @@ def execute_remote_command(vm1_config, command: str):
             username=vm1_config.username,
             password=vm1_config.password
         )
-        stdin, stdout, stderr = client.exec_command(command)
+        stdin, stdout, stderr = client.exec_command(full_command)
         output = stdout.read().decode("utf-8").strip()
         errors = stderr.read().decode("utf-8").strip()
         logging.info("Remote command output: " + output)
@@ -137,43 +140,23 @@ def execute_remote_command(vm1_config, command: str):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Host → VM1 file transfer + always upload elk_sender.py + run vm1_to_vm2.py"
+        description="Host → VM1 file transfer + upload scripts + run vm1_to_vm2.py on VM1"
     )
-    parser.add_argument(
-        "--file",
-        required=True,
-        help="File path on Host PC to send to VM1"
-    )
-    parser.add_argument(
-        "--config",
-        default="config.yaml",
-        help="Path to the configuration file (default: config.yaml)"
-    )
-    parser.add_argument(
-        "--script",
-        default="vm1_to_vm2.py",
-        help="vm1_to_vm2.py path on Host PC (for VM1→VM2 execution)"
-    )
-    parser.add_argument(
-        "--elk_sender",
-        default="elk_sender.py",
-        help="elk_sender.py path on Host PC (will be uploaded to VM1, but not executed by default)"
-    )
-    parser.add_argument(
-        "--file_transfer",
-        default="file_transfer.py",
-        help="file_transfer.py path on Host PC"
-    )
+    parser.add_argument("--file", required=True, help="File path on Host PC to send to VM1")
+    parser.add_argument("--config", default="config.yaml", help="Path to the configuration file (default: config.yaml)")
+    parser.add_argument("--script", default="vm1_to_vm2.py", help="Path to vm1_to_vm2.py on Host PC (for VM1→VM2 execution)")
+    parser.add_argument("--elk_sender", default="elk_sender.py", help="Path to elk_sender.py on Host PC (to be uploaded to VM1)")
+    parser.add_argument("--file_transfer", default="file_transfer.py", help="Path to file_transfer.py on Host PC")
     args = parser.parse_args()
 
-    # 1) load config
+    # 1) Load config
     try:
         config = load_config(args.config)
     except Exception as e:
         logging.error(f"Error loading config: {e}")
         sys.exit(1)
 
-    # 2) prepare VM1 SSH config
+    # 2) Prepare VM1 SSH config
     vm1_cfg = config["host_to_vm1"]
     vm1_config = SSHConfig(
         host=vm1_cfg["host"],
@@ -182,43 +165,43 @@ def main():
         password=vm1_cfg["password"]
     )
 
-    # 3) check/install dependencies on VM1
+    # 3) Check/install dependencies on VM1 using the default python interpreter
     try:
-        ensure_vm1_dependencies(vm1_config)
+        ensure_vm1_dependencies(vm1_config, PYTHON_INTERPRETER)
     except Exception as e:
         logging.error(f"Dependency installation failed: {e}")
         sys.exit(1)
 
-    # 4) transfer main file from Host → VM1
+    # 4) Transfer main file from Host → VM1
     logging.info("Transferring main file from Host to VM1...")
     remote_file_path = host_to_vm1(args.file, config)
     logging.info(f"Main file transferred to VM1 at: {remote_file_path}")
 
-    # 5) ensure VM1 temp dir
+    # 5) Ensure VM1 temporary directory exists
     vm1_temp_dir = config.get("vm1_temp_dir", f"/home/{vm1_cfg['username']}/temporary/")
     ensure_remote_directory(vm1_config, vm1_temp_dir)
 
-    # 6) always upload vm1_to_vm2.py, elk_sender.py, file_transfer.py, config.yaml to VM1
+    # 6) Always upload vm1_to_vm2.py, elk_sender.py, file_transfer.py, config.yaml to VM1
     remote_script = os.path.join(vm1_temp_dir, os.path.basename(args.script))
     remote_elk_sender = os.path.join(vm1_temp_dir, os.path.basename(args.elk_sender))
     remote_config_path = os.path.join(vm1_temp_dir, os.path.basename(args.config))
     remote_file_transfer = os.path.join(vm1_temp_dir, os.path.basename(args.file_transfer))
 
-    logging.info(f"Uploading vm1_to_vm2.py => {remote_script}")
+    logging.info(f"Uploading vm1_to_vm2.py to {remote_script}")
     upload_file_to_vm1(args.script, remote_script, vm1_config)
 
-    logging.info(f"Uploading elk_sender.py => {remote_elk_sender}")
+    logging.info(f"Uploading elk_sender.py to {remote_elk_sender}")
     upload_file_to_vm1(args.elk_sender, remote_elk_sender, vm1_config)
 
-    logging.info(f"Uploading config => {remote_config_path}")
+    logging.info(f"Uploading config to {remote_config_path}")
     upload_file_to_vm1(args.config, remote_config_path, vm1_config)
 
-    logging.info(f"Uploading file_transfer.py => {remote_file_transfer}")
+    logging.info(f"Uploading file_transfer.py to {remote_file_transfer}")
     upload_file_to_vm1(args.file_transfer, remote_file_transfer, vm1_config)
 
-    # 7) By default, run vm1_to_vm2.py on VM1
-    command = f"python3.10 {remote_script} --file {remote_file_path} --config {remote_config_path}"
-    execute_remote_command(vm1_config, command)
+    # 7) Run vm1_to_vm2.py on VM1 using the default python interpreter
+    command = f"{remote_script} --file {remote_file_path} --config {remote_config_path}"
+    execute_remote_command(vm1_config, command, PYTHON_INTERPRETER)
 
 if __name__ == "__main__":
     main()
