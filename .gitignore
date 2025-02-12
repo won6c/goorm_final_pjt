@@ -4,4 +4,5 @@ config.ini
 *.json
 *.exe
 Malware_sample/*
+!Malware_sample/.gitkeep
 
