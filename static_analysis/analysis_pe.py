@@ -175,6 +175,11 @@ def get_imported_libraries(file_path):
         return {"error": str(e)}
 
 def analyze_pe(file_path):
+    # .gitkeep 파일 제외
+    if os.path.basename(file_path) == ".gitkeep":
+        print("⚠️ .gitkeep 파일은 분석에서 제외됩니다.")
+        return
+
     get_file_type(file_path)
     unpacked_path = check_packing(file_path) or file_path # 언패킹된 파일 사용
     get_file_hashes(file_path)

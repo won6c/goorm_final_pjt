@@ -46,6 +46,10 @@ def scan_directory(directory_path, rules):
 
     for root, dirs, files in os.walk(directory_path):
         for file in files:
+            # .gitkeep 파일 제외
+            if file == ".gitkeep":
+                continue
+            
             file_path = os.path.join(root, file)
             is_malicious, detected_file = scan_file(file_path, rules)
             if is_malicious:

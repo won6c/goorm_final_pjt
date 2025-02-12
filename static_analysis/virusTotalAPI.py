@@ -80,7 +80,7 @@ def scan_files(scan_folder_arg = None):
         if os.path.isdir(scan_folder): # scan_folder가 폴더인지 확인
             scan_folder = [
                 os.path.join(scan_folder, f) for f in os.listdir(scan_folder) 
-                if os.path.isfile(os.path.join(scan_folder, f)) and not f.endswith(".json") # JSON 파일 제외
+                if os.path.isfile(os.path.join(scan_folder, f)) and not f.endswith(".json") and f != ".gitkeep" # JSON, .gitkeep 파일 제외
             ]
 
     results = {}

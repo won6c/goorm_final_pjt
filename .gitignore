@@ -3,4 +3,5 @@ config.ini
 /OUTPUT
 *.json
 *.exe
+Malware_sample/*
 
