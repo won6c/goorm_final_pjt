@@ -139,4 +139,4 @@ def process_reg(before_capture, after_capture):
     with open("registry_changes.json", "w", encoding="utf-8") as f:
         json.dump(result, f, indent=4, ensure_ascii=False)
 
-    return {"reg_capture":result}
+    return result

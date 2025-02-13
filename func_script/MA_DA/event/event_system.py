@@ -47,5 +47,4 @@ def monitor_system_event_log(server="localhost", log_type="System", event_id_fil
 
     win32evtlog.CloseEventLog(hand)
 
-    return result_dict
-
+    return result_dict["system"]

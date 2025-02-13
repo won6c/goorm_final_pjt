@@ -48,4 +48,4 @@ def monitor_security_event_log(server="localhost", log_type="Security", event_id
 
     win32evtlog.CloseEventLog(hand)
 
-    return result_dict
+    return result_dict["security"]

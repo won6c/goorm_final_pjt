@@ -98,4 +98,4 @@ def process_list():
             print(f"오류 발생: {e}")
             break
     pythoncom.CoUninitialize()
-    return {"process":process_result}
+    return process_result

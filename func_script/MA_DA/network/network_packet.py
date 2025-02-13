@@ -43,4 +43,4 @@ def process_packet(packet):
 def process_network():
     packets = sniff(prn = process_packet, store = 1, stop_filter=lambda pkt: stop_event.is_set())
     wrpcap("captured_packets.pcap", packets)
-    return result_network
+    return result_network["network"]
