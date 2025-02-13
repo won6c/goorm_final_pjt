@@ -30,12 +30,15 @@ function stalkAllThreads() {
             onCallSummary: function(summary) {
                 for (var target in summary) {
                     var sym = DebugSymbol.fromAddress(ptr(target));
+                    var mod = Process.findModuleByAddress(ptr(target));
                     send({
                         type: "ThreadCall",
                         thread_id: thread.id,
                         target: sym.name,
                         address: target,
                         count: summary[target],
+                        module:mod?mod.name : "unknown",
+                        module_base:mod?mod.base.toString():"N/A",
                         timestamp: getTimestamp()
                     });
                 }
