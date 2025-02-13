@@ -10,6 +10,15 @@ CREATE_VMDK_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware-vdi
 # ENCODING = 'UTF-8'                  # 기본
 ENCODING = 'windows-949-2000'     # 파일명에 한글이 들어가 있을 때
 
+# ESXi 설정
+HOST = '192.168.117.152'    # ESXi's IP
+USER = 'root'               # ESXi's Username
+PASSWARD = 'dkssud1!'       # ESXi's Password
+
+WINDOWS_NAME = 'windows_sandbox'
+WINDOWS_ISO_PATH = fr'C:\Users\admin\Downloads\Windows.iso'
+
+
 # VMware의 내부 설정
 CPU_COUNT = 4           # 총 CPU 개수
 RAM_COUNT = 4096        # RAM 용량 MB(기본 4GB)
