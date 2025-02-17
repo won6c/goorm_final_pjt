@@ -19,6 +19,12 @@ python main.py (Run)
     upx --version 
     ```
 
+### virustotal API
+- [virustotal community](https://www.virustotal.com/gui/home/upload)
+    1. To use the API, join the virus total community
+    2. After creating the config.ini file [DEFAULT] VT_API_KEY = Put your key in
+
+
 ## yara rule refrence
 - [naxonez](https://github.com/naxonez/YaraRules)
 - [reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules)

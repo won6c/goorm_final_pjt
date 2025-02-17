@@ -106,8 +106,8 @@ def scan_files(scan_folder_arg = None):
     output_dir = os.path.join(os.path.dirname(__file__), "..", "OUTPUT") # OUTPUT 폴더 경로
     os.makedirs(output_dir, exist_ok=True) # 폴더 없으면 생성
 
-    file_name = os.path.basename(file_path)
-    output_path = os.path.join(output_dir, f"virustotal_{file_name}.json") # OUTPUT 폴더에 저장
+    #file_name = os.path.basename(file_path)
+    output_path = os.path.join(output_dir, f"VirusTotalResult.json") # OUTPUT 폴더에 저장
 
     with open(output_path, "w", encoding="utf-8") as json_file:
         json.dump(results, json_file, indent=4, ensure_ascii=False)
