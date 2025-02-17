@@ -20,9 +20,8 @@ python main.py (Run)
     ```
 
 ### virustotal API
-- [virustotal community](https://www.virustotal.com/gui/home/upload)
-    1. To use the API, join the virus total community
-    2. After creating the config.ini file [DEFAULT] VT_API_KEY = Put your key in
+1. To use the API, join the [virustotal community](https://www.virustotal.com/gui/home/upload)
+2. After creating the config.ini file [DEFAULT] VT_API_KEY = Put your key in 
 
 
 ## yara rule refrence
