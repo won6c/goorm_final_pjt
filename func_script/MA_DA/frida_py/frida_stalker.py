@@ -2,17 +2,24 @@ import frida
 import sys
 import os
 import json
-
+import time
+import copy
+from common import stop_event
 log_messages = {
     "process": {},
     "threads": {},
     "misc": []
 }
 
-JS_SCRIPT_PATH = os.path.join(os.getcwd(), "frida_stalker.js")
+JS_SCRIPT_PATH = os.path.join(os.getcwd(),"frida_py", "frida_stalker.js")
 
 with open(JS_SCRIPT_PATH, "r", encoding='utf-8') as f:
     script_code = f.read()
+
+#script_code+="\n"
+#
+#with open("interceptor_api.js","r",encoding='utf-8') as f:
+#    script_code+=f.read()
 
 def on_message(message, data):
     """Frida 스크립트에서 send()로 전달한 메시지를 처리하는 콜백 함수"""
@@ -47,14 +54,14 @@ def on_child_added(child):
         print("[-] Failed to attach stalker to child process:", e)
 
 
-def main():
-    try:
-        exe_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-        pid = frida.spawn([exe_path])
-        session = frida.attach(pid)
-    except Exception as e:
-        print(f"[-] 프로세스 부착 실패: {e}")
-        sys.exit(1)
+def process_stalker(session):
+    #try:
+    #    exe_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    #    pid = frida.spawn([exe_path])
+    #    session = frida.attach(pid)
+    #except Exception as e:
+    #    print(f"[-] 프로세스 부착 실패: {e}")
+    #    sys.exit(1)
 
     try:
         device = frida.get_local_device()
@@ -71,22 +78,18 @@ def main():
     script.on("message", on_message)
     script.load()
     print("[*] 스크립트 로드 완료. 엔터를 누르면 종료합니다.")
-    frida.resume(pid)
+    #frida.resume(pid)
 
     try:
-        sys.stdin.read()
+        while not stop_event.is_set():
+            time.sleep(1)
     except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Exiting...")
-    finally:
-        try:
-            pass
-        except KeyboardInterrupt:
-            pass
+        #result_dict_copy = copy.deepcopy(log_messages)
+        #with open("stalker.json","w",encoding='utf-8') as f:
+        #    json.dump(log_messages, f, indent=4)
+        #print("KeyboardInterrupt received. Exiting...")
         session.detach()
-        print("[*] 종료되었습니다.")
-        with open("stalker.json","w",encoding='utf-8') as f:
-            json.dump(log_messages, f, indent=4)
 
-if __name__ == "__main__":
-    main()
+    return log_messages
+
 
