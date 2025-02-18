@@ -177,7 +177,6 @@ def get_imported_libraries(file_path):
 def analyze_pe(file_path):
     # .gitkeep 파일 제외
     if os.path.basename(file_path) == ".gitkeep":
-        print("⚠️ .gitkeep 파일은 분석에서 제외됩니다.")
         return
 
     get_file_type(file_path)

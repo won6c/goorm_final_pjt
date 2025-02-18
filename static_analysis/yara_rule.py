@@ -56,7 +56,7 @@ def scan_directory(directory_path, rules):
                 infected_files.append(detected_file)
 
     if infected_files:
-        print("\n📊 감염된 파일 리스트:")
+        print("\n📊 감염 의심 파일 리스트:")
         for f in infected_files:
             print(f"   - {f}")
     else:

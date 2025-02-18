@@ -27,4 +27,5 @@ python main.py (Run)
 ## yara rule refrence
 - [naxonez](https://github.com/naxonez/YaraRules)
 - [reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules)
+- [MalGamy](https://github.com/MalGamy/YARA_Rules)
 - Will be continuously modified and added...

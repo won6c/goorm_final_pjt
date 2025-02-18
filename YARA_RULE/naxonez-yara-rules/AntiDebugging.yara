@@ -182,10 +182,11 @@ rule DebuggerPattern__RDTSC : AntiDebug DebuggerPattern {
 	meta:
 		weight = 1
 	strings:
-		$ = {0F 31}
+		$rdtsc = {0F 31}
 	condition:
-		any of them
+	any of them
 }
+
 
 rule DebuggerPattern__CPUID : AntiDebug DebuggerPattern {
 	meta:
