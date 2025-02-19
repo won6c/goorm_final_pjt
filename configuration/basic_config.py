@@ -1,36 +1,36 @@
 import os
 
-# 수정할 설정
+# Modifying setting
 HOME_DIR = os.path.expanduser('~')
 WORKING_DIR_NAME = 'sandbox'
 VM_NAME = 'ESXi_sandbox'
-ISO_URL = '<to download iso_path>'
+ISO_URL = '<*>'  # To download iso_path(insert)
 ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
 VMWARE_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe'
 CREATE_VMDK_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware-vdiskmanager.exe'
-# ENCODING = 'UTF-8'                  # 기본
-ENCODING = 'windows-949-2000'     # 파일명에 한글이 들어가 있을 때
+# ENCODING = 'UTF-8'  # Basic
+ENCODING = 'windows-949-2000'  # When korean in file name & directory name
 
 # ESXi 설정
-HOST = '192.168.117.152'    # ESXi's IP
-USER = 'root'               # ESXi's Username
-PASSWORD = 'rnfma1!'       # ESXi's Password
+HOST = ''      # ESXi's IP(insert)
+USER = 'root'  # ESXi's Username
+PASSWORD = ''  # ESXi's Password(insert)
 
 WINDOWS_NAME = 'windows_sandbox'
 WINDOWS_ISO_PATH = os.path.join(HOME_DIR, 'Downloads', 'Windows.iso')
 
-# VMware의 내부 설정
-CPU_COUNT = 4           # 총 CPU 개수
-RAM_COUNT = 4096        # RAM 용량 MB(기본 4GB)
-DISK_COUNT = 142        # 디스크 크기 GB(기본 142GB)
+# VMware's inner setting
+CPU_COUNT = 4           # Total CPU count
+RAM_COUNT = 4096        # RAM size (MB): normal 4GB
+DISK_COUNT = 142        # Disk size (GB): normal 142GB
 NETWORK_TYPE = 'nat'    # 네트워크 방식
 
-# Windows의 내부 설정
-WINDOWS_CPU_COUNT = 2
-WINDOWS_RAN_COUNT = 2048
-WINDOWS_DISK_COUNT = 60  # 디스크 크기 GB
+# Windows's inner setting
+WINDOWS_CPU_COUNT = 2     # Total CPU count
+WINDOWS_RAN_COUNT = 2048  # RAM size (MB): normal half ESXi's RAM
+WINDOWS_DISK_COUNT = 60   # Disk size (GB): normal 60GB
 
-# 기본 설정
+# base setting
 DESKTOP_DIR = os.path.join(HOME_DIR, 'Desktop')
 WORKING_DIR = os.path.join(DESKTOP_DIR, WORKING_DIR_NAME)
 VM_DIR = os.path.join(WORKING_DIR, 'vmware', VM_NAME)
