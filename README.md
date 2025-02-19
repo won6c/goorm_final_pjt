@@ -28,4 +28,5 @@ python main.py (Run)
 - [naxonez](https://github.com/naxonez/YaraRules)
 - [reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules)
 - [MalGamy](https://github.com/MalGamy/YARA_Rules)
+- [embee-research](https://github.com/embee-research/Yara-detection-rules/tree/main)
 - Will be continuously modified and added...
