@@ -9,6 +9,7 @@ from common import stop_event
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from event.event_security import *
 from event.event_system import *
+from cdb_bp.cdb import *
 import os, time, psutil, copy, frida
 
 def wait_for_termination_or_timeout(pid, timeout=60):
@@ -37,6 +38,7 @@ def process():
         future_network = executor.submit(process_network)
         session = resume_frida_with_process(pid)
         future_frida = executor.submit(process_stalker, session)
+        #future_cdb = executor.submit(process_cdb,pid)
         #future_frida = executor.submit(process_frida, session)
         frida.resume(pid)
         if not session:
@@ -75,6 +77,7 @@ def process():
     result_dict_copy = copy.deepcopy(result_dict)
     with open('mid_result.json', 'w', encoding='utf-8') as f:
         json.dump(result_dict_copy, f, indent=4, ensure_ascii=False)
+        
 def main():
     process()
 
