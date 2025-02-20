@@ -1,0 +1,4 @@
+frida==16.6.4
+psutil==6.1.0
+pywin32==308
+scapy==2.6.1
