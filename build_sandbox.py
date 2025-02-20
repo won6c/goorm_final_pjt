@@ -2,9 +2,8 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 
-import paramiko
-
 from utils import cmd_run_admin, download_iso, create_file, SSHClientManager
+
 
 class BaseSetup(ABC):
     """Abstract class: Base class for esxi & windows VM setup"""
@@ -80,48 +79,52 @@ class ESXiSetup(BaseSetup):
 
 class WindowsSetup(BaseSetup):
     """Create Windows with nested virtualization on esxi VM"""
-    def __init__(self, host, user, password, windows_name, iso_path, vmx_content, disk_count) -> None:
+    def __init__(
+        self,
+        host: str,
+        user: str,
+        password: str,
+        iso_path: str,
+        vmx_path: str, 
+        vmdk_path: str, 
+        working_dir: str,
+        windows_name: str,
+        vmx_content: str,
+        disk_count: str,
+        ) -> None:
         self.sshclient = SSHClientManager(host, user, password)
-        self.windows_name = windows_name
         self.iso_path = iso_path
+        self.vmx_path = vmx_path
+        self.vmdk_path = vmdk_path
+        self.working_dir = working_dir
+        self.windows_name = windows_name
         self.vmx_content = vmx_content
         self.disk_count = disk_count
-    
-    def file_transfer(self) -> None:
-        try:
-            transport = paramiko.Transport(('192.168.117.152', 22))
-            transport.connect(username='root', password='rnfma1!')
-            sftp = paramiko.SFTPClient.from_transport(transport)
-
-            remote_path = os.path.join('/vmfs/volumes/datastore1/iso/',os.path.basename(self.iso_path))
-            sftp.put(self.iso_path, remote_path)
-
-            sftp.close()
-            transport.close()
-            print(f'✅ File transferred successfully')
-        except Exception as e:
-            print(f'❌ Error transferring file: {e}')
+        
+        self.iso_dir = self.working_dir + '/iso'
+        self.windows_dir = self.working_dir + '/' + self.windows_name
+        self.iso_filename = os.path.basename(self.iso_path)
 
     def process(self):
         self.sshclient.connect()
-        
-        self.sshclient.execute_command('mkdir -p /vmfs/volumes/datastore1/iso')
-        
-        file_list, _ = self.sshclient.execute_command('ls /vmfs/volumes/datastore1/iso')
-        if os.path.basename(self.iso_path) not in file_list:
-            self.file_transfer()
-        
-        vm_id, error = self.sshclient.execute_command(f'vim-cmd vmsvc/createdummyvm "{self.windows_name}" /vmfs/volumes/datastore1')
+
+        self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')
+
+        file_list, _ = self.sshclient.execute_command(f'ls {self.iso_dir}')
+        if self.iso_filename not in file_list:
+            self.sshclient.file_transfer(self.iso_path, self.iso_dir+'/'+self.iso_filename)
+
+        vm_id, error = self.sshclient.execute_command(f'vim-cmd vmsvc/createdummyvm "{self.windows_name}" {self.working_dir}')
         if error or not vm_id:
             print('❌ Failed to retrieve VM ID')
-            self.sshclient.execute_command(f'rm -rf /vmfs/volumes/datastore1/{self.windows_name}')
+            self.sshclient.execute_command(f'rm -rf {self.windows_dir}')
             return
         print(f'✅ VM Created: {vm_id}')
 
-        self.sshclient.execute_command(f'vmkfstools -X {self.disk_count}g /vmfs/volumes/datastore1/{self.windows_name}/{self.windows_name}.vmdk')
-        self.sshclient.execute_command(f'sed -i -e "/^guestOS /d" /vmfs/volumes/datastore1/{self.windows_name}/{self.windows_name}.vmx')
-        
-        append_vmx_command = f"""cat >> /vmfs/volumes/datastore1/{self.windows_name}/{self.windows_name}.vmx <<'EOF'
+        self.sshclient.execute_command(f'vmkfstools -X {self.disk_count}g {self.vmdk_path}')
+        self.sshclient.execute_command(f'sed -i -e "/^guestOS /d" {self.vmx_path}')
+
+        append_vmx_command = f"""cat >> {self.vmx_path} <<'EOF'
 {self.vmx_content}
 EOF
 """
@@ -129,5 +132,5 @@ EOF
         self.sshclient.execute_command(f'vim-cmd vmsvc/reload {vm_id}')
         self.sshclient.execute_command(f'vim-cmd vmsvc/power.on {vm_id}')
         print(f'✅ VM {vm_id} reloaded and powered on successfully')
-        
+
         self.sshclient.close()

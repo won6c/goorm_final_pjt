@@ -51,7 +51,7 @@ def cmd_run_admin(command: str) -> str:
 
 
 class SSHClientManager:
-    """Run command while """
+    """Run command while connect SSH"""
     def __init__(self, hostname, username, password=None) -> None:
         self.hostname = hostname
         self.username = username
@@ -97,6 +97,20 @@ class SSHClientManager:
                 return None, str(e)
         else:
             return None, 'connection failed'
+    
+    def file_transfer(self, src_path: str, dst_path: str) -> None:
+        """Through SSH, Transfer file"""
+        if not self.ssh:
+            print('❌ No SSH connection. Trying to reconnect...')
+            self.connect()
+        
+        try:
+            with self.ssh.open_sftp() as sftp:
+                print(f'✅ Transferring file from [{src_path}] to [{dst_path}]')
+                sftp.put(src_path, dst_path)
+                print(f'✅ File transferred successfully')
+        except Exception as e:
+            print(f'❌ Error transferring file: {e}')
 
     def close(self) -> None:
         """Close SSH connection"""

@@ -4,12 +4,18 @@ import os
 HOME_DIR = os.path.expanduser('~')
 WORKING_DIR_NAME = 'sandbox'
 VM_NAME = 'ESXi_sandbox'
-ISO_URL = '<*>'  # To download iso_path(insert)
+ISO_URL = ''  # To download iso_path(insert)
 ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
 VMWARE_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe'
 CREATE_VMDK_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware-vdiskmanager.exe'
-# ENCODING = 'UTF-8'  # Basic
 ENCODING = 'windows-949-2000'  # When korean in file name & directory name
+# ENCODING = 'UTF-8'  # Basic
+
+# VMware's inner setting
+CPU_COUNT = 4           # Total CPU count
+RAM_COUNT = 4096        # RAM size (MB): normal 4GB
+DISK_COUNT = 142        # Disk size (GB): normal 142GB
+NETWORK_TYPE = 'nat'    # 네트워크 방식
 
 # ESXi 설정
 HOST = ''      # ESXi's IP(insert)
@@ -17,13 +23,6 @@ USER = 'root'  # ESXi's Username
 PASSWORD = ''  # ESXi's Password(insert)
 
 WINDOWS_NAME = 'windows_sandbox'
-WINDOWS_ISO_PATH = os.path.join(HOME_DIR, 'Downloads', 'Windows.iso')
-
-# VMware's inner setting
-CPU_COUNT = 4           # Total CPU count
-RAM_COUNT = 4096        # RAM size (MB): normal 4GB
-DISK_COUNT = 142        # Disk size (GB): normal 142GB
-NETWORK_TYPE = 'nat'    # 네트워크 방식
 
 # Windows's inner setting
 WINDOWS_CPU_COUNT = 2     # Total CPU count
@@ -37,6 +36,11 @@ VM_DIR = os.path.join(WORKING_DIR, 'vmware', VM_NAME)
 ISO_PATH = os.path.join(WORKING_DIR, ISO_NAME)
 VMX_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmx')
 VMDK_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmdk')
+
+WINDOWS_WORKING_DIR = '/vmfs/volumes/datastore1'
+WINDOWS_ISO_PATH = r''  # Windows_iso_path(insert)
+WINDOWS_VMX_PATH = WINDOWS_WORKING_DIR + f'/{WINDOWS_NAME}/{WINDOWS_NAME}.vmx'
+WINDOWS_VMDK_PATH = WINDOWS_WORKING_DIR + f'/{WINDOWS_NAME}/{WINDOWS_NAME}.vmdk'
 
 VMX_CONTENT = f""".encoding = "{ENCODING}"
 config.version = "8"
