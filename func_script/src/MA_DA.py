@@ -9,7 +9,6 @@ from common import stop_event
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from event.event_security import *
 from event.event_system import *
-from cdb_bp.cdb import *
 import os, time, psutil, copy, frida, sys
 
 def wait_for_termination_or_timeout(pid, timeout=60):
