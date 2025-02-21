@@ -112,9 +112,10 @@ class SSHClientManager:
         except Exception as e:
             print(f'❌ Error transferring file: {e}')
 
-    def close(self) -> None:
+    def stop_close(self) -> None:
         """Close SSH connection"""
         if self.ssh:
+            self.execute_command('/etc/init.d/SSH stop')
             self.ssh.close()
             self.ssh = None
             print('☠️ Close SSH connection')
