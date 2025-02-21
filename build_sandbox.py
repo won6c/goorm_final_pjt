@@ -2,11 +2,18 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 
-from utils import cmd_run_admin, download_iso, create_file, SSHClientManager
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+from utils import make_folder, cmd_run_admin, download_iso, create_file, SSHClientManager
+from configuration.basic_config import VM_DIR
 
 class BaseSetup(ABC):
-    """Abstract class: Base class for esxi & windows VM setup"""
+    """Abstract class: Base class for ESXi & Windows VM setup"""
     
     @abstractmethod
     def process(self):
@@ -67,6 +74,7 @@ class ESXiSetup(BaseSetup):
             print(f"❌ Failed to launch VMware: {e}")
 
     def process(self):
+        make_folder(VM_DIR)
         cmd_run_admin('bcdedit /set hypervisorlaunchtype off')
         
         download_iso(self.iso_path, self.iso_url)
@@ -76,13 +84,12 @@ class ESXiSetup(BaseSetup):
         self.launch_vmware()
 
 
-
 class WindowsSetup(BaseSetup):
-    """Create Windows with nested virtualization on esxi VM"""
+    """Create Windows with nested virtualization on ESXi VM"""
     def __init__(
         self,
         host: str,
-        user: str,
+        username: str,
         password: str,
         iso_path: str,
         vmx_path: str, 
@@ -92,7 +99,10 @@ class WindowsSetup(BaseSetup):
         vmx_content: str,
         disk_count: str,
         ) -> None:
-        self.sshclient = SSHClientManager(host, user, password)
+        self.sshclient = SSHClientManager(host, username, password)
+        self.host = host
+        self.username = username
+        self.password = password
         self.iso_path = iso_path
         self.vmx_path = vmx_path
         self.vmdk_path = vmdk_path
@@ -101,11 +111,64 @@ class WindowsSetup(BaseSetup):
         self.vmx_content = vmx_content
         self.disk_count = disk_count
         
-        self.iso_dir = self.working_dir + '/iso'
-        self.windows_dir = self.working_dir + '/' + self.windows_name
+        self.iso_dir = f'{self.working_dir}/iso'
+        self.windows_dir = f'{self.working_dir}/{self.windows_name}'
         self.iso_filename = os.path.basename(self.iso_path)
 
-    def process(self):
+    def init_webdriver(self) -> webdriver.Chrome:
+        """Initialize Chrome WebDriver"""
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-certificate-errors')
+        
+        driver = webdriver.Chrome(service=Service(), options=options)
+        driver.maximize_window()
+        return driver
+
+    def find_click(self, driver: webdriver.Chrome, by: By, value: str, timeout: int = 10) -> bool:
+        """Find & click a web element"""
+        try:
+            WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((by, value))).click()
+            return True
+        except TimeoutException:
+            print(f'❌ Not found: {value}')
+            return False
+        except Exception as e:
+            print(f'❌ Unexpected Error: {e}')
+            return False
+
+    def login_esxi(self, driver: webdriver.Chrome, timeout: int = 10) -> bool:
+        """Login to ESXi web"""
+        driver.get(f'https://{self.host}/ui/#/host/manage/services')
+        try:
+            WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(self.username)
+            WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(self.password)
+            if self.find_click(driver, By.XPATH, '//button[@type="submit"]'):
+                print('✅ Login successfully')
+                return True
+        except TimeoutException:
+            print(f'❌ Fail loading login page')
+        except NoSuchElementException:
+            print(f'❌ Not found login element')
+        return False
+
+    def ssh_enable(self) -> None:
+        """Enable SSH on ESXi web"""
+        driver = self.init_webdriver()
+        try:
+            if self.login_esxi(driver):
+                self.find_click(driver, By.XPATH, '//button[contains(@class, "btn-primary") and text()="확인"]', 3)
+                if self.find_click(driver, By.XPATH, '//div[contains(text(), "TSM-SSH")]'):
+                    print(f'✅ TSM-SSH service clicked successfully')
+
+                    if self.find_click(driver, By.XPATH, '//a[contains(@title, "시작")]'):
+                        print(f'✅ Activate SSH successfully')
+        except Exception as e:
+            print(f'❌ Unexpected Error: {e}')
+        finally:
+            driver.quit()
+
+    def process(self) -> None:
+        driver = self.ssh_enable()
         self.sshclient.connect()
 
         self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')
@@ -133,4 +196,4 @@ EOF
         self.sshclient.execute_command(f'vim-cmd vmsvc/power.on {vm_id}')
         print(f'✅ VM {vm_id} reloaded and powered on successfully')
 
-        self.sshclient.close()
+        self.sshclient.stop_close()
