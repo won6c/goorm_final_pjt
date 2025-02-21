@@ -22,6 +22,11 @@
   - s00x.vmdk 생성(저장파일)
   - nvram, scoreboard, vmsd, vmxf, vmem, log는 실행하면 자동 생성
 
+- 수동 동작해야 할 것
+  - 사용자 계정 생성일 때 수동으로 동작해주어야 한다.
+  - enter -> f11 -> enter -> enter -> 비밀번호 후 enter -> f11 -> enter(reboot)
+
+
 # ESXi VM -> Windows create
 ESXi shell를 열어서 pip-paramiko 모듈을 이용하여 SSH 연결
 
