@@ -3,6 +3,8 @@ config.ini
 /OUTPUT
 *.json
 # 모든 파일 무시
-Malware_sample/*
+Malware_dataset/*
 # 폴더 자체는 예외 처리
-!Malware_sample/
+LLM/roberta_malware_model/*
+Malware_Detect/h5/*
+Malware_Detect/temp_bmp
