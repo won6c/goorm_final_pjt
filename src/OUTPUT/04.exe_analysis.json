@@ -1,0 +1,117 @@
+{
+    "file_type": {
+        "file": "C:\\Users\\User\\Desktop\\DestDir\\04.exe",
+        "extension": ".exe",
+        "mime_type": "application/x-dosexec"
+    },
+    "sections": [
+        {
+            "section_name": ".text",
+            "size": 196608,
+            "entropy": 4.11
+        },
+        {
+            "section_name": ".rdata",
+            "size": 12288,
+            "entropy": 3.75
+        },
+        {
+            "section_name": ".data",
+            "size": 20480,
+            "entropy": 0.78
+        },
+        {
+            "section_name": ".idata",
+            "size": 4096,
+            "entropy": 2.64
+        },
+        {
+            "section_name": ".reloc",
+            "size": 8192,
+            "entropy": 4.91
+        }
+    ],
+    "hashes": {
+        "MD5": "70d41eadb33a9d48d112031733406655",
+        "SHA1": "013c77d3050346bcb2af4a49b141320467ed8e41",
+        "SHA256": "d36727b07105a6d517cc0b0919770d027a938b7c5cb6784572cfe346a87c4815"
+    },
+    "pe_signature": {
+        "MZ_signature": "4D5A",
+        "PE_signature": "50450000",
+        "PE_offset": "0xE8"
+    },
+    "imported_libraries": {
+        "📂KERNEL32.dll": {
+            "total_imported_libs": 57,
+            "🚨suspicious🚨(의심됨)": [
+                "IsDebuggerPresent",
+                "TerminateProcess",
+                "WriteFile",
+                "GetProcAddress",
+                "LoadLibraryA",
+                "CloseHandle",
+                "ReadFile"
+            ],
+            "functions": [
+                "IsDebuggerPresent",
+                "Sleep",
+                "MultiByteToWideChar",
+                "GetCommandLineA",
+                "GetVersion",
+                "ExitProcess",
+                "RtlUnwind",
+                "RaiseException",
+                "IsBadWritePtr",
+                "IsBadReadPtr",
+                "HeapValidate",
+                "TerminateProcess",
+                "GetCurrentProcess",
+                "DebugBreak",
+                "GetStdHandle",
+                "WriteFile",
+                "InterlockedDecrement",
+                "OutputDebugStringA",
+                "GetProcAddress",
+                "LoadLibraryA",
+                "InterlockedIncrement",
+                "GetModuleFileNameA",
+                "UnhandledExceptionFilter",
+                "FreeEnvironmentStringsA",
+                "FreeEnvironmentStringsW",
+                "WideCharToMultiByte",
+                "GetEnvironmentStrings",
+                "GetEnvironmentStringsW",
+                "SetHandleCount",
+                "GetFileType",
+                "GetStartupInfoA",
+                "GetModuleHandleA",
+                "GetEnvironmentVariableA",
+                "GetVersionExA",
+                "HeapDestroy",
+                "HeapCreate",
+                "HeapFree",
+                "VirtualFree",
+                "GetLastError",
+                "SetFilePointer",
+                "FlushFileBuffers",
+                "CloseHandle",
+                "SetUnhandledExceptionFilter",
+                "HeapAlloc",
+                "HeapReAlloc",
+                "VirtualAlloc",
+                "SetConsoleCtrlHandler",
+                "GetCPInfo",
+                "GetACP",
+                "GetOEMCP",
+                "IsBadCodePtr",
+                "ReadFile",
+                "SetStdHandle",
+                "GetStringTypeA",
+                "GetStringTypeW",
+                "LCMapStringA",
+                "LCMapStringW"
+            ]
+        }
+    }
+}

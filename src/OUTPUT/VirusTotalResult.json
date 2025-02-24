@@ -1,0 +1,6 @@
+{
+    "C:\\Users\\User\\Desktop\\DestDir\\04.exe": {
+        "Error": "Status Code: 401",
+        "Response": "{\"error\": {\"code\": \"AuthenticationRequiredError\", \"message\": \"X-Apikey header is missing\"}}"
+    }
+}
