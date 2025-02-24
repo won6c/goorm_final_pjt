@@ -76,7 +76,7 @@ if (createThread) {
                    event: "new_thread_created",
                    thread_id: threadId,
                    timestamp: getTimestamp()
-               });
+               });A
                send({
                    type: "ThreadEvent",
                    event: "creation",
@@ -88,12 +88,15 @@ if (createThread) {
                    onCallSummary: function(summary) {
                        for (var target in summary) {
                            var sym = DebugSymbol.fromAddress(ptr(target));
+                           var mod = Process.findModuleByAddress(ptr(target));
                            send({
                                type: "ThreadCall",
                                thread_id: threadId,
                                target: sym.name,
                                address: target,
                                count: summary[target],
+                               module:mod?mod.name : "unknown",
+                               module_base:mod?mod.base.toString():"N/A",
                                timestamp: getTimestamp()
                            });
                        }
@@ -441,132 +444,6 @@ if (exitProcess) {
     });
 }
 
-//// CreateRemoteThread
-//var createRemoteThread = Module.findExportByName("kernel32.dll", "CreateRemoteThread");
-//if (createRemoteThread) {
-//    Interceptor.attach(createRemoteThread, {
-//        onEnter: function(args) {
-//            this.startRoutine = args[3];
-//            this.param = args[4];
-//            send({
-//                type: "CreateRemoteThread",
-//                event: "called",
-//                startRoutine: this.startRoutine.toString(),
-//                param: this.param.toString(),
-//                timestamp: getTimestamp()
-//            });
-//        },
-//        onLeave: function(retval) {
-//            if (!retval.isNull()) {
-//                var GetThreadId = new NativeFunction(Module.findExportByName("kernel32.dll", "GetThreadId"), 'uint', ['pointer']);
-//                var threadId = GetThreadId(retval);
-//                send({
-//                    type: "CreateRemoteThread",
-//                    event: "new_thread_created",
-//                    thread_id: threadId,
-//                    timestamp: getTimestamp()
-//                });
-//                send({
-//                    type: "ThreadEvent",
-//                    event: "creation",
-//                    thread_id: threadId,
-//                    timestamp: getTimestamp()
-//                });
-//                Stalker.follow(threadId, {
-//                    events: { call: true },
-//                    onCallSummary: function(summary) {
-//                        for (var target in summary) {
-//                            var sym = DebugSymbol.fromAddress(ptr(target));
-//                            send({
-//                                type: "NewThreadCall",
-//                                thread_id: threadId,
-//                                target: sym.name,
-//                                address: target,
-//                                count: summary[target],
-//                                timestamp: getTimestamp()
-//                            });
-//                        }
-//                    }
-//                });
-//                send({
-//                    type: "info",
-//                    message: "Stalker started on new thread: " + threadId,
-//                    timestamp: getTimestamp()
-//                });
-//            }
-//        }
-//    });
-//} else {
-//    send({
-//        type: "error",
-//        message: "CreateRemoteThread not found",
-//        timestamp: getTimestamp()
-//    });
-//}
-//
-//// CreateRemoteThreadEx
-//var createRemoteThreadEx = Module.findExportByName("kernel32.dll", "CreateRemoteThreadEx");
-//if (createRemoteThreadEx) {
-//    Interceptor.attach(createRemoteThreadEx, {
-//        onEnter: function(args) {
-//            this.startRoutine = args[3];
-//            this.param = args[4];
-//            send({
-//                type: "CreateRemoteThreadEx",
-//                event: "called",
-//                startRoutine: this.startRoutine.toString(),
-//                param: this.param.toString(),
-//                timestamp: getTimestamp()
-//            });
-//        },
-//        onLeave: function(retval) {
-//            if (!retval.isNull()) {
-//                var GetThreadId = new NativeFunction(Module.findExportByName("kernel32.dll", "GetThreadId"), 'uint', ['pointer']);
-//                var threadId = GetThreadId(retval);
-//                send({
-//                    type: "CreateRemoteThreadEx",
-//                    event: "new_thread_created",
-//                    thread_id: threadId,
-//                    timestamp: getTimestamp()
-//                });
-//                send({
-//                    type: "ThreadEvent",
-//                    event: "creation",
-//                    thread_id: threadId,
-//                    timestamp: getTimestamp()
-//                });
-//                Stalker.follow(threadId, {
-//                    events: { call: true },
-//                    onCallSummary: function(summary) {
-//                        for (var target in summary) {
-//                            var sym = DebugSymbol.fromAddress(ptr(target));
-//                            send({
-//                                type: "NewThreadCall",
-//                                thread_id: threadId,
-//                                target: sym.name,
-//                                address: target,
-//                                count: summary[target],
-//                                timestamp: getTimestamp()
-//                            });
-//                        }
-//                    }
-//                });
-//                send({
-//                    type: "info",
-//                    message: "Stalker started on new thread: " + threadId,
-//                    timestamp: getTimestamp()
-//                });
-//            }
-//        }
-//    });
-//} else {
-//    send({
-//        type: "error",
-//        message: "CreateRemoteThreadEx not found",
-//        timestamp: getTimestamp()
-//    });
-//}
-
 var isdbgpr = Module.findExportByName("kernel32.dll", "IsDebuggerPresent");
 if (isdbgpr) {
     Interceptor.attach(isdbgpr, {
@@ -805,31 +682,18 @@ if (getProcAddress) {
                 }
             } catch (e) {}
             
-            // args[1] should point to an ANSI string.
             var api = "unknown";
             if (args[1].isNull()) {
                 return;
             }
             
-            // 포인터 값이 너무 낮은 경우(예: 0x1000 미만)는 유효하지 않은 주소로 판단
-            //var ptrVal = parseInt(args[1].toString(), 16);
-            //if (ptrVal < 0x1000) {
-            //    send({
-            //        type: "warning",
-            //        message: "GetProcAddress called with invalid API name pointer: " + args[1].toString(),
-            //        timestamp: getTimestamp()
-            //    });
-            //    return;
-            //}
-            
-            // 추가: 포인터가 frida_agent.dll 영역에 속하는지 확인
             try {
                 var modForApi = Process.findModuleByAddress(ptr(args[1]));
                 if (modForApi && modForApi.name.toLowerCase().indexOf("frida_agent.dll") !== -1) {
                     return;
                 }
             } catch (e) {
-                // 예외 발생 시 무시하고 진행
+
             }
             
             try {
@@ -848,7 +712,6 @@ if (getProcAddress) {
                 timestamp: getTimestamp()
             });
         }
-        // 필요에 따라 onLeave 콜백 추가
     });
 } else {
 
@@ -1204,17 +1067,6 @@ if (cryptHashData) {
     });
 }
 
-// 전역 로그 및 헬퍼
-var log_messages = {
-    "process": {},
-    "threads": {},
-    "misc": []
-};
-
-function getTimeStamp() {
-    return (new Date()).toISOString();
-}
-
 // AttachThreadInput
 var attachThreadInput = Module.findExportByName("user32.dll","AttachThreadInput");
 if (attachThreadInput) {
@@ -1343,14 +1195,14 @@ if (shellExecuteA) {
     });
 }
 
-// ShellExecuteW (오타 수정: readUtf16String)
+// ShellExecuteW 
 var shellExecuteW = Module.findExportByName("user32.dll","ShellExecuteW");
 if (shellExecuteW) {
     Interceptor.attach(shellExecuteW, {
         onEnter: function(args){
             var hwnd = args[0];
             var lpOperation = Memory.readUtf16String(args[1]);
-            var lpFile = Memory.readCString(args[2]);  // 보통 파일 경로는 ANSI인 경우도 있음
+            var lpFile = Memory.readCString(args[2]); 
             var lpParameters = Memory.readUtf16String(args[3]);
             var lpDirectory = Memory.readUtf16String(args[4]);
             var nShowCmd = args[5].toInt32();
@@ -1581,7 +1433,7 @@ if (shellExecuteEx) {
     });
 }
 
-// ws2_32.dll의 send (내장 send() 함수와 충돌하지 않도록 ws2_send로 변경)
+// ws2_32.dll의 send 
 var ws2_send = Module.findExportByName("ws2_32.dll", "send");
 if (ws2_send) {
     Interceptor.attach(ws2_send, {
@@ -2069,9 +1921,6 @@ if (netScheduleJobAdd) {
         }
     });
 }
-
-// psapi.dll의 EnumProcesses 및 EnumProcessModules 등은 위와 동일하게 처리...
-// (생략)
 
 // shell32.dll의 ShellExecuteExW
 var shellExecuteEx = Module.findExportByName("shell32.dll", "ShellExecuteExW");

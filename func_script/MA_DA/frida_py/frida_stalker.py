@@ -107,4 +107,7 @@ def process_stalker(session):
             else:
                 log_messages["threads"][tid] = {"details": misc_events}
 
+    for tid, thread_obj in log_messages["threads"].items():
+        thread_obj["function or api"] = list(set(thread_obj["function or api"]))
+
     return log_messages

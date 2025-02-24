@@ -9,8 +9,7 @@ from common import stop_event
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from event.event_security import *
 from event.event_system import *
-from cdb_bp.cdb import *
-import os, time, psutil, copy, frida
+import os, time, psutil, copy, frida, sys
 
 def wait_for_termination_or_timeout(pid, timeout=60):
     start_time = time.time()
@@ -25,7 +24,7 @@ def signal_threads_to_stop():
     stop_event.set()
 
 def process():
-    file = r"C:\Program Files\Google\Chrome\Application\chrome.exe"#os.path.join(os.getcwd(), "frida_py", "04.exe")
+    file = sys.argv[1]
 
     before_capture = capture()
     process_time = time.time()
@@ -77,7 +76,6 @@ def process():
     result_dict_copy = copy.deepcopy(result_dict)
     with open('mid_result.json', 'w', encoding='utf-8') as f:
         json.dump(result_dict_copy, f, indent=4, ensure_ascii=False)
-        
 def main():
     process()
 
