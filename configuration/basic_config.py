@@ -1,46 +1,70 @@
 import os
+# ==========================
+# 🔹 [1] Core setting value
+# ==========================
 
-# Modifying setting
-HOME_DIR = os.path.expanduser('~')
-WORKING_DIR_NAME = 'sandbox'
-VM_NAME = 'ESXi_sandbox'
-ISO_URL = ''  # To download iso_path(insert)
+ISO_URL = ''  # To download iso_path(insert 💨)
+
 ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
-VMWARE_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe'
-CREATE_VMDK_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware-vdiskmanager.exe'
-ENCODING = 'windows-949-2000'  # When korean in file name & directory name
+ENCODING = 'windows-949-2000'  # When Korean in file name & directory name
 # ENCODING = 'UTF-8'  # Basic
 
 # VMware's inner setting
 CPU_COUNT = 4           # Total CPU count
 RAM_COUNT = 4096        # RAM size (MB): normal 4GB
 DISK_COUNT = 142        # Disk size (GB): normal 142GB
-NETWORK_TYPE = 'nat'    # 네트워크 방식
+NETWORK_TYPE = 'nat'    # network method
 
-# ESXi 설정
-HOST = ''      # ESXi's IP(insert)
-USER = 'root'  # ESXi's Username
-PASSWORD = ''  # ESXi's Password(insert)
-
-WINDOWS_NAME = 'windows_sandbox'
+# ESXi server infomation
+HOST = ''         # ESXi's IP(insert 💨)
+USER = 'root'     # ESXi's Username
+PASSWORD = ''     # ESXi's Password(insert 💨)
+SAVING_PATH = ''  # ESXi's Base path saving file
 
 # Windows's inner setting
 WINDOWS_CPU_COUNT = 2     # Total CPU count
-WINDOWS_RAN_COUNT = 2048  # RAM size (MB): normal half ESXi's RAM
-WINDOWS_DISK_COUNT = 60   # Disk size (GB): normal 60GB
+WINDOWS_RAN_COUNT = 2048  # RAM size (MB): Normal half ESXi's RAM
+WINDOWS_DISK_COUNT = 60   # Disk size (GB): Normal 60GB
 
-# base setting
+# Windows server infomation
+WINDOWS_HOST = ''         # Windows's IP(insert 💨)
+WINDOWS_USER = ''         # Windows's Username(insert 💨)
+WINDOWS_PASSWORD = ''     # Windows's Password(insert 💨)
+WINDOWS_SAVING_PATH = ''  # Windows's Base path saving file
+
+# ==========================
+# 🔹 [2] Path setting
+# ==========================
+
+HOME_DIR = os.path.expanduser('~')
 DESKTOP_DIR = os.path.join(HOME_DIR, 'Desktop')
+
+WORKING_DIR_NAME = 'sandbox'
 WORKING_DIR = os.path.join(DESKTOP_DIR, WORKING_DIR_NAME)
+
+VM_NAME = 'ESXi_sandbox'
 VM_DIR = os.path.join(WORKING_DIR, 'vmware', VM_NAME)
 ISO_PATH = os.path.join(WORKING_DIR, ISO_NAME)
+
 VMX_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmx')
 VMDK_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmdk')
 
+WINDOWS_NAME = 'windows_sandbox'
 WINDOWS_WORKING_DIR = '/vmfs/volumes/datastore1'
-WINDOWS_ISO_PATH = r''  # Windows_iso_path(insert)
+WINDOWS_ISO_PATH = r''  # Windows_iso_path(insert 💨)
 WINDOWS_VMX_PATH = f'{WINDOWS_WORKING_DIR}/{WINDOWS_NAME}/{WINDOWS_NAME}.vmx'
 WINDOWS_VMDK_PATH = f'{WINDOWS_WORKING_DIR}/{WINDOWS_NAME}/{WINDOWS_NAME}.vmdk'
+
+# ==========================
+# 🔹 [3] VMware execute file path
+# ==========================
+
+VMWARE_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe'
+CREATE_VMDK_PATH = r'C:\Program Files (x86)\VMware\VMware Workstation\vmware-vdiskmanager.exe'
+
+# ==========================
+# 🔹 [4] VM setup file (VMX) template
+# ==========================
 
 VMX_CONTENT = f""".encoding = "{ENCODING}"
 config.version = "8"
@@ -105,3 +129,18 @@ sata0:0.present = "TRUE"
 sata0:0.deviceType = "cdrom-image"
 sata0:0.fileName = "/vmfs/volumes/datastore1/iso/Windows.iso"
 """
+
+# ==========================
+# 🔹 [45] ELK Setting (elk_sender.py)
+# ==========================
+
+VM1_TEMP_DIR = '/home/vm1/temporary'
+ELASTICSEARCH_URL = 'http://3.36.50.236:9200'
+KIBANA_URL = 'http://3.36.50.236:5601'
+
+INDEX_NAME = 'malware-analysis-*'
+INDEX_PATTERN_TITLE = 'malware-analysis-*'
+DATA_VIEW_ID = 'malware-data-view'
+
+HEADERS_KBN_XSRF = 'true'
+HEADERS_CONTENT_TYPE = 'application/json'

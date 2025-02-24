@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 from abc import ABC, abstractmethod
 
@@ -9,8 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
-from utils import make_folder, cmd_run_admin, download_iso, create_file, SSHClientManager
-from configuration.basic_config import VM_DIR
+from setup.utils import logging, make_folder, cmd_run_admin, download_iso, create_file, SSHClientManager
+from configuration.basic_config import VM_DIR, WORKING_DIR
 
 class BaseSetup(ABC):
     """Abstract class: Base class for ESXi & Windows VM setup"""
@@ -47,7 +48,7 @@ class ESXiSetup(BaseSetup):
         """Create VMDK extention to save on hard disk"""
         try:
             if not os.path.exists(self.vmdk_path):
-                print(f'✅ Creating vmdk file: {self.vmdk_path}')
+                logging.info(f'✅ Creating vmdk file: {self.vmdk_path}')
                 subprocess.run([
                     self.create_vmdk_path,
                     '-c',
@@ -57,25 +58,31 @@ class ESXiSetup(BaseSetup):
                     self.vmdk_path
                     ])
             else:
-                print(f'⚠️ vmdk_file is already existed: {os.path.basename(self.vmdk_path)}')
+                logging.warning(f'⚠️ vmdk_file is already existed: {os.path.basename(self.vmdk_path)}')
         except FileNotFoundError:
-            print(f"❌ VMware executable not found at {self.create_vmdk_path}. Please check the path.")
+            logging.error(f"❌ VMware executable not found at {self.create_vmdk_path}. Please check the path.")
         except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to create vmdk: {e}")
+            logging.error(f"❌ Failed to create vmdk: {e}")
 
     def launch_vmware(self) -> None:
         """Run VMware Workstation"""
         try:
-            print(f'✅ Launching VMware: {self.vmware_path}')
+            logging.info(f'✅ Launching VMware: {self.vmware_path}')
             subprocess.Popen([self.vmware_path, '-x', self.vmx_path], shell=True)
         except FileNotFoundError:
-            print(f"❌ VMware executable not found at {self.vmware_path}. Please check the path.")
+            logging.error(f"❌ VMware executable not found at {self.vmware_path}. Please check the path.")
         except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to launch VMware: {e}")
+            logging.error(f"❌ Failed to launch VMware: {e}")
 
     def process(self):
         make_folder(VM_DIR)
-        cmd_run_admin('bcdedit /set hypervisorlaunchtype off')
+        
+        enable_nested_virtualization = os.path.join(WORKING_DIR, 'enable_nested_virtualization.txt')
+        cmd_run_admin(f'bcdedit /enum > {enable_nested_virtualization}')
+        with open(enable_nested_virtualization, 'r') as file:
+            content = file.read()
+        if not re.search(r'hypervisorlaunchtype\s+Off', content):
+            cmd_run_admin(rf'bcdedit /set hypervisorlaunchtype off & del {enable_nested_virtualization} & shutdown \r \t 0')
         
         download_iso(self.iso_path, self.iso_url)
         create_file(self.vmx_path, self.vmx_content)
@@ -130,10 +137,10 @@ class WindowsSetup(BaseSetup):
             WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((by, value))).click()
             return True
         except TimeoutException:
-            print(f'❌ Not found: {value}')
+            logging.error(f'❌ Not found: {value}')
             return False
         except Exception as e:
-            print(f'❌ Unexpected Error: {e}')
+            logging.error(f'❌ Unexpected Error: {e}')
             return False
 
     def login_esxi(self, driver: webdriver.Chrome, timeout: int = 10) -> bool:
@@ -143,12 +150,12 @@ class WindowsSetup(BaseSetup):
             WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(self.username)
             WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(self.password)
             if self.find_click(driver, By.XPATH, '//button[@type="submit"]'):
-                print('✅ Login successfully')
+                logging.info('✅ Login successfully')
                 return True
         except TimeoutException:
-            print(f'❌ Fail loading login page')
+            logging.error(f'❌ Fail loading login page')
         except NoSuchElementException:
-            print(f'❌ Not found login element')
+            logging.error(f'❌ Not found login element')
         return False
 
     def ssh_enable(self) -> None:
@@ -158,17 +165,17 @@ class WindowsSetup(BaseSetup):
             if self.login_esxi(driver):
                 self.find_click(driver, By.XPATH, '//button[contains(@class, "btn-primary") and text()="확인"]', 3)
                 if self.find_click(driver, By.XPATH, '//div[contains(text(), "TSM-SSH")]'):
-                    print(f'✅ TSM-SSH service clicked successfully')
+                    logging.info(f'✅ TSM-SSH service clicked successfully')
 
                     if self.find_click(driver, By.XPATH, '//a[contains(@title, "시작")]'):
-                        print(f'✅ Activate SSH successfully')
+                        logging.info(f'✅ Activate SSH successfully')
         except Exception as e:
-            print(f'❌ Unexpected Error: {e}')
+            logging.error(f'❌ Unexpected Error: {e}')
         finally:
             driver.quit()
 
     def process(self) -> None:
-        driver = self.ssh_enable()
+        self.ssh_enable()
         self.sshclient.connect()
 
         self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')
@@ -179,10 +186,10 @@ class WindowsSetup(BaseSetup):
 
         vm_id, error = self.sshclient.execute_command(f'vim-cmd vmsvc/createdummyvm "{self.windows_name}" {self.working_dir}')
         if error or not vm_id:
-            print('❌ Failed to retrieve VM ID')
+            logging.error('❌ Failed to retrieve VM ID')
             self.sshclient.execute_command(f'rm -rf {self.windows_dir}')
             return
-        print(f'✅ VM Created: {vm_id}')
+        logging.info(f'✅ VM Created: {vm_id}')
 
         self.sshclient.execute_command(f'vmkfstools -X {self.disk_count}g {self.vmdk_path}')
         self.sshclient.execute_command(f'sed -i -e "/^guestOS /d" {self.vmx_path}')
@@ -194,6 +201,6 @@ EOF
         self.sshclient.execute_command(append_vmx_command)
         self.sshclient.execute_command(f'vim-cmd vmsvc/reload {vm_id}')
         self.sshclient.execute_command(f'vim-cmd vmsvc/power.on {vm_id}')
-        print(f'✅ VM {vm_id} reloaded and powered on successfully')
+        logging.info(f'✅ VM {vm_id} reloaded and powered on successfully')
 
         self.sshclient.stop_close()
