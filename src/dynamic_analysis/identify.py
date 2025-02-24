@@ -7,7 +7,7 @@ def classify_api_calls(api_list, signatures=SIGNATURES):
         for mal_type, sig_set in signatures.items():
             if any(sig.lower() in api.lower() for sig in sig_set):
                 match_counts[mal_type] += 1
-                break 
+                #break 
     if all(count == 0 for count in match_counts.values()):
         return "Unknown", match_counts
     else:
