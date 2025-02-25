@@ -1,9 +1,14 @@
 import yara
 import os
 import glob
+import json
 
 # main.py 자신이 있는 폴더 경로
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# vt_results.json이 있는 폴더 경로
+vt_results_file = os.path.join(BASE_DIR, "..", "OUTPUT", "vt_results.json")
+vt_results_file = os.path.abspath(vt_results_file) 
 
 # YARA Rules가 있는 폴더 경로
 rule_folder_path = os.path.join(BASE_DIR, "..", "YARA_RULE")
@@ -43,23 +48,44 @@ def scan_file(file_path, rules):
 # 디렉토리 스캔 함수 
 def scan_directory(directory_path, rules):
     infected_files = []
-
-    for root, dirs, files in os.walk(directory_path):
-        for file in files:
-            # .gitkeep 파일 제외
-            if file == ".gitkeep":
-                continue
+    target_files = []
+    global vt_results_file
             
-            file_path = os.path.join(root, file)
-            is_malicious, detected_file = scan_file(file_path, rules)
-            if is_malicious:
-                infected_files.append(detected_file)
+    # 바이러스토탈 검사 결과 JSON 파일 로드
+    if os.path.exists(vt_results_file):
+        with open(vt_results_file, "r", encoding="utf-8") as f:
+            vt_results = json.load(f)
+    else:
+        print("❌ 바이러스토탈 검사 결과 파일을 찾을 수 없습니다.")
+        vt_results = {}
+        print(vt_results_file)
+
+    # 검사 대상 파일 선정 (malicious_count >= 1 인 파일만 선택)
+    for file, vt_result in vt_results.items():
+        malicious_count = vt_result.get("Malicious_Count", 0)
+        if malicious_count > 0:
+            file_path = os.path.join(directory_path, file)
+            target_files.append(file_path)
+
+    if not target_files:
+        print("\n✅ 바이러스토탈에서 악성코드로 판정된 파일이 없습니다.")
+        return []
+
+    print(f"\n🔎 YARA 룰 검사 대상 파일 ({len(target_files)}개):")
+    for file in target_files:
+        print(f"   - {file}")
+
+    # 🔹 YARA 룰 검사 수행
+    for file_path in target_files:
+        is_malicious, detected_file = scan_file(file_path, rules)
+        if is_malicious:
+            infected_files.append(detected_file)
 
     if infected_files:
-        print("\n📊 감염 의심 파일 리스트:")
+        print("\n📊 YARA 룰 탐지 결과 (악성코드 의심 파일):")
         for f in infected_files:
             print(f"   - {f}")
     else:
-        print("\n✅ 악성코드가 탐지되지 않았습니다.")
+        print("\n✅ YARA 룰 기반 악성코드가 탐지되지 않았습니다.")
 
     return infected_files  # 감염된 파일 리스트 반환

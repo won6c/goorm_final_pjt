@@ -8,7 +8,15 @@ import subprocess
 # 검사할 디렉토리 경로
 scan_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../Malware_sample"))
 
+# 바이러스토탈 JSON 파일 경로 설정
+vt_results_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "vt_results.json"))
+
 def main():
+    # 바이러스토탈 검사
+    print("\n🔍 바이러스토탈 검사 실행 중...")
+    vt_script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "virusTotalAPI.py"))
+    subprocess.run(["python", vt_script_path, scan_folder])
+
     # YARA 룰 로드
     try:
         rules = yara_rule.load_yara_rules(yara_rule.rule_folder_path)
@@ -25,13 +33,6 @@ def main():
         for file in infected_files:
             print(f"\n🎯 {file} 분석 진행...")
             analysis_pe.analyze_pe(file)
-
-    # 바이러스토탈 검사 여부
-    user_input = input("\n🔎 바이러스토탈(VirusTotal) 검사를 진행할까요? (yes/no): ").strip().lower()
-    if user_input == "yes":
-        print("\n🔍 바이러스토탈 검사 실행 중...")
-        vt_script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "virusTotalAPI.py"))
-        subprocess.run(["python", vt_script_path, scan_folder]) 
 
 if __name__ == "__main__":
     main()
