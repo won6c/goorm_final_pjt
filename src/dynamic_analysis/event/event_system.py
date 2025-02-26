@@ -13,16 +13,21 @@ def log_event(event_id, event_time, event_source, event_message):
     log_message = f"[EVENT] ID: {event_id} | Time: {event_time} | Provider: {event_source} | Message: {event_message}"
     logging.info(log_message)
     #print(f" [LOGGED] {log_message}")
-    return {"event_id":event_id,"event_time":event_time,"event_provider":event_source,"event_message":event_message}
+    return {
+        "event_id": event_id,
+        "event_time": event_time,
+        "event_provider": event_source,
+        "event_message": event_message
+    }
 
 def monitor_system_event_log(server="localhost", log_type="System", event_id_filter=None):
-    """Windows 이벤트 로그 모니터링"""
+    """Windows 이벤트 로그 모니터링 (동일한 event_id 발생 시 count 증가)"""
     hand = win32evtlog.OpenEventLog(server, log_type)
     flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
 
-    #print(f"[INFO] Monitoring {log_type} log...")
+    # 결과를 저장할 딕셔너리 (key: event_id, value: 이벤트 정보와 count)
     result_dict = {}
-    result_dict["system"]=[]
+    result_dict["system"] = {}
 
     while not stop_event.is_set():
         events = win32evtlog.ReadEventLog(hand, flags, 0)
@@ -38,14 +43,18 @@ def monitor_system_event_log(server="localhost", log_type="System", event_id_fil
             event_data = event.StringInserts
             event_message = " | ".join(event_data) if event_data else "No additional information"
 
-            # 특정 이벤트 ID 필터링
+            # 특정 이벤트 ID 필터링 (필터가 지정된 경우)
             if event_id_filter and event_id not in event_id_filter:
                 continue
 
-            # 로그 파일에 저장
-            result_dict["system"].append(log_event(event_id, event_time, event_source, event_message))
+            # 동일한 event_id가 이미 존재하면 count만 증가
+            if event_id in result_dict["system"]:
+                result_dict["system"][event_id]["count"] += 1
+            else:
+                log_entry = log_event(event_id, event_time, event_source, event_message)
+                log_entry["count"] = 1  # 최초 발생 시 카운트 1로 설정
+                result_dict["system"][event_id] = log_entry
 
     win32evtlog.CloseEventLog(hand)
 
     return result_dict
-

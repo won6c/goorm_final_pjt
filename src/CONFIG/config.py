@@ -3,6 +3,7 @@ import os
 TOOLS = {
     "EXIFTOOL_PATH":"exiftool\\exiftool.exe",
     "STRINGS_PATH":"strings\\strings.exe",
+    "PROCDUMP_PATH":"procdump\\procdump.exe",
 }
 
 Results = {
@@ -44,6 +45,9 @@ FINAL_RESULT_OUTPUT_PATH = os.path.join( OUTPUT_PATH, Results["FINAL_RESULT_PATH
 
 EXIFTOOL_PATH = os.path.join(TOOLS_PATH,TOOLS["EXIFTOOL_PATH"])
 STRINGS_PATH = os.path.join(TOOLS_PATH,TOOLS["STRINGS_PATH"])
+PROCDUMP_PATH = os.path.join(TOOLS_PATH,TOOLS["PROCDUMP_PATH"])
+
+DUMP_FILE = "memory.dmp"
 
 SIGNATURES = {
     'Ransomware': {

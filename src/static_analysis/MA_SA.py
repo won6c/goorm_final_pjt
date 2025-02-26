@@ -4,6 +4,10 @@ from static_analysis.virusTotalAPI import *
 from CONFIG.config import SCAN_FOLDER
 
 def process_MA_SA():
+
+    print("\n🔍 바이러스토탈 검사 실행 중...")
+    vt_result = scan_files() #dict
+    
     # YARA 룰 로드
     try:
         rules = load_yara_rules(rule_folder_path)
@@ -21,11 +25,7 @@ def process_MA_SA():
             print(f"\n🎯 {file} 분석 진행...")
             pe_result = analyze_pe(file)
 
-    # 바이러스토탈 검사 여부 
-    #user_input = input("\n🔎 바이러스토탈(VirusTotal) 검사를 진행할까요? (yes/no): ").strip().lower()
-    #if user_input == "yes":
-    print("\n🔍 바이러스토탈 검사 실행 중...")
-    vt_result = scan_files() #dict
+    
 
     return_dict ={
         "infected_files":infected_files,

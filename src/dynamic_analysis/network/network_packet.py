@@ -35,9 +35,9 @@ def process_packet(packet):
         payload_len = len(payload)
     
     if packet.haslayer(Raw):#실제 전송시에는 base64.b64encode(payload).decode('ascii') -> payload
-        network_dict = {"protocol":protocol,"src":src_ip,"sport":src_port,"dst":dst_ip,"dport":dst_port,"payload_len":payload_len,"payload":base64.b64encode(payload).decode('ascii')}
+        network_dict = {"protocol":protocol,"src":src_ip,"sport":src_port,"dst":dst_ip,"dport":dst_port,"payload_len":payload_len}
     else:
-        network_dict = {"protocol":protocol,"src":src_ip,"sport":src_port,"dst":dst_ip,"dport":dst_port,"payload_len":"","payload":""}
+        network_dict = {"protocol":protocol,"src":src_ip,"sport":src_port,"dst":dst_ip,"dport":dst_port,"payload_len":""}
 
     result_network["network"].append(network_dict)
     

@@ -57,10 +57,10 @@ def scan_directory(directory_path, rules):
                 infected_files.append(detected_file)
 
     if infected_files:
-        print("\n📊 감염 의심 파일 리스트:")
+        print("\n📊 YARA 룰 탐지 결과 (악성코드 의심 파일):")
         for f in infected_files:
             print(f"   - {f}")
     else:
-        print("\n✅ 악성코드가 탐지되지 않았습니다.")
+        print("\n✅ YARA 룰 기반 악성코드가 탐지되지 않았습니다.")
 
     return infected_files  # 감염된 파일 리스트 반환

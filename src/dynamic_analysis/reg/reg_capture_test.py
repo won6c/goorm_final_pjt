@@ -64,11 +64,7 @@ def flatten_registry_data(data, parent_key=""):
 def compare_registry_paths(capture1, capture2):
     added = {key: capture2[key] for key in capture2 if key not in capture1}
     deleted = {key: capture1[key] for key in capture1 if key not in capture2}
-    modified = {
-        key: {"old": capture1[key], "new": capture2[key]}
-        for key in capture1
-        if key in capture2 and capture1[key] != capture2[key]
-    }
+    modified = [key for key in capture1 if key in capture2 and capture1[key] != capture2[key]]
 
     return added, modified, deleted
 

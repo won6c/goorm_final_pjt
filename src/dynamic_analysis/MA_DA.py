@@ -8,7 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from dynamic_analysis.event.event_security import *
 from dynamic_analysis.event.event_system import *
 from dynamic_analysis.identify import *
-import time, psutil, copy, frida, sys
+from dynamic_analysis.memory.memory_dump import *
+import time, psutil, copy, frida
 from CONFIG.config import MID_RESULT_PATH, TIMEOUT
 
 def wait_for_termination_or_timeout(pid, timeout=TIMEOUT):
@@ -43,6 +44,7 @@ def process_MA_DA():
             exit(1)
         
         future_dll   = executor.submit(process_dll, pid)
+        future_memory = executor.submit(run_procdump_and_analyze,pid)
         
         wait_for_termination_or_timeout(pid)
         signal_threads_to_stop()
@@ -53,6 +55,7 @@ def process_MA_DA():
         result_event_system = future_event_system_list.result()
         result_network = future_network.result()
         result_watchdog = future_watchdog.result()
+        result_memory = future_memory.result()
 
     result_dict = {
         "process_frida": result_frida,
@@ -60,7 +63,8 @@ def process_MA_DA():
         "event_security":result_event_security,
         "event_system":result_event_system,
         "network_traffic":result_network,
-        "watchdog":result_watchdog
+        "watchdog":result_watchdog,
+        "memory":result_memory
     }
 
     after_capture = capture()

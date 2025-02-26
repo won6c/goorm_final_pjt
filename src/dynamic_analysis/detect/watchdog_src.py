@@ -23,7 +23,7 @@ def should_log(file_path):
 
 class MonitorHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        if event.is_directory or stop_event.is_set():
+        if event.is_directory or stop_event.is_set():  # <- Stop 이벤트 감지 추가
             return
 
         file_path = event.src_path
@@ -108,7 +108,7 @@ def start_watcher():
     observer.start()
 
     try:
-        while not stop_event.is_set(): 
+        while not stop_event.is_set():  # <- stop_event 감지해서 종료 처리
             time.sleep(1)
     except KeyboardInterrupt:
         pass
