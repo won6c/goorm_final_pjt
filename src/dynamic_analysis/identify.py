@@ -23,23 +23,30 @@ def classify_api_calls(api_list, signatures=SIGNATURES):
 def classify_threads(result_dict_copy):
     """
     result_dict_copy["process_frida"]["threads"]에 있는 각 스레드에 대해,
-    "events" 항목에서 "ThreadCall" 이벤트의 "target"과 "count" 필드를 이용해
-    API 호출 목록을 구성한 후, classify_api_calls()를 통해 분류 결과를 저장합니다.
+    "events" 항목에서 "ThreadCall" 이벤트의 "target"과 "count" 필드를 이용해 API 호출 목록을 구성하고,
+    또한 "details" 항목에 있는 각 payload의 "type" 값을 추가한 후,
+    classify_api_calls()를 통해 분류 결과를 저장합니다.
     """
     threads = result_dict_copy.get("process_frida", {}).get("threads", {})
     for tid, thread_info in threads.items():
         events = thread_info.get("events", [])
+        details = thread_info.get("details", [])
         api_list = []
+        # events에서 ThreadCall 이벤트 처리
         for event in events:
             if event.get("type") == "ThreadCall":
                 target = event.get("target")
                 if target:
-                    # count 필드가 있으면 해당 수만큼 추가, 없으면 1회 추가
                     try:
                         count = int(event.get("count", 1))
                     except Exception:
                         count = 1
                     api_list.extend([target] * count)
+        # details에서 각 payload의 type 값만 추가
+        for detail in details:
+            etype = detail.get("type")
+            if etype:
+                api_list.append(etype)
         # 저장 (나중에 재분석을 위해 "function or api" 필드에 저장)
         thread_info["function or api"] = api_list
         classified_type, counts = classify_api_calls(api_list)
