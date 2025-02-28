@@ -74,14 +74,26 @@ def final_classification(result_deep_copy):
     """
     각 스레드의 분류 결과를 종합하여 최종 악성코드 유형을 결정합니다.
     만약 전체 매칭 건수가 모두 0이거나 최대 매칭 건수가 THRESHOLD 미만이면 "Not Malware"로 분류합니다.
+    만약 최고 매칭이 "Helper"라면, 그 다음으로 높은 유형을 최종 유형으로 사용합니다.
     """
     overall_counts = aggregate_classification(result_deep_copy)
-    max_count = max(overall_counts.values()) if overall_counts else 0
+    if not overall_counts:
+        return "Not Malware", overall_counts
+
+    max_count = max(overall_counts.values())
     if max_count < THRESHOLD:
         final_type = "Not Malware"
     else:
-        final_type = max(overall_counts, key=overall_counts.get)
+        # 내림차순 정렬 (항목, count) 튜플 리스트 생성
+        sorted_counts = sorted(overall_counts.items(), key=lambda x: x[1], reverse=True)
+        candidate = sorted_counts[0][0]
+        # 최고 항목이 "Helper"인 경우, 두 번째 항목을 사용 (두 번째 항목이 없으면 그대로 Helper)
+        if candidate == "Helper" and len(sorted_counts) > 1:
+            final_type = sorted_counts[1][0]
+        else:
+            final_type = candidate
     return final_type, overall_counts
+
 
 def print_final_classification(result_deep_copy):
     final_type, overall_counts = final_classification(result_deep_copy)

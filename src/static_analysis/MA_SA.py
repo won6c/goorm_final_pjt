@@ -1,7 +1,7 @@
 from static_analysis.yara_rule import *
 from static_analysis.analysis_pe import *
 from static_analysis.virusTotalAPI import *
-from CONFIG.config import SCAN_FOLDER
+from CONFIG.config import SCAN_FOLDER, RULE_FOLDER_PATH
 
 def process_MA_SA():
 
@@ -10,7 +10,7 @@ def process_MA_SA():
     
     # YARA 룰 로드
     try:
-        rules = load_yara_rules(rule_folder_path)
+        rules = load_yara_rules(RULE_FOLDER_PATH)
         print("✅ YARA 룰이 성공적으로 로드되었습니다.")
     except Exception as e:
         print(f"❌ YARA 룰 로드 중 오류 발생: {e}")
@@ -24,7 +24,8 @@ def process_MA_SA():
         for file in infected_files:
             print(f"\n🎯 {file} 분석 진행...")
             pe_result = analyze_pe(file)
-
+    else:
+        pe_result={}
     
 
     return_dict ={

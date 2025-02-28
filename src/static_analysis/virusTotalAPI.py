@@ -20,7 +20,10 @@ def get_virustotal_report(file_hash):
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
     headers = {"x-apikey": load_api_key_from_config()}
 
-    response = requests.get(url, headers=headers)
+    try:
+        response = requests.get(url, headers=headers)
+    except Exception as e:
+        return  {"Error":f"Status Code: {None}", "Response":f"{e.__class__.__name__}"}
 
     if response.status_code == 200:
         data = response.json()
