@@ -62,7 +62,7 @@ def get_process_pid(process_name):
 def run_procdump_and_analyze(pid):
     chrome_pid = pid
     if chrome_pid:
-        dump_command = [PROCDUMP_PATH, "-ma", str(chrome_pid), DUMP_FILE]
+        dump_command = [PROCDUMP_PATH, "-accepteula", "-ma", str(chrome_pid), DUMP_FILE]
         
         try:
             subprocess.run(dump_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
