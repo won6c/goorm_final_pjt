@@ -32,7 +32,7 @@ def process_MA_DA():
     with ThreadPoolExecutor(max_workers=6) as executor: # 함수를 추가할 수록 max_workers의 값을 추가하는 함수의 개수만큼 추가해야 함
         future_watchdog = executor.submit(start_watcher)
         future_event_security_list = executor.submit(monitor_security_event_log,"localhost","Security",[4624, 4625, 4672])
-        future_event_system_list = executor.submit(monitor_system_event_log,"localhost","System",[4624, 4625, 4672])
+        future_event_system_list = executor.submit(monitor_system_event_log,"localhost","System",[6005, 6006, 7001, 7036])
         time.sleep(5)
         pid = spawn_frida_to_process(file)
         future_network = executor.submit(process_network)
