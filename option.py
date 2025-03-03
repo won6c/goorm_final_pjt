@@ -87,10 +87,11 @@ def option(options: argparse.Namespace) -> None:
             power_maintain = input('Input VM power state[0=vm power state maintain and revert, 1=shutdown power and revert]: ')
             
             ssh.execute_command(f'vim-cmd vmsvc/snapshot.revert {vm_id} {snapshot_id} {power_maintain}')
+            ssh.execute_command(f'vim-cmd vmsvc/power.on {vm_id}')
         elif options.snapshot == 'remove':
             snapshot_id = input('Input snapshot_id: ')
             
-            ssh.execute_command(f'vim-cmd vmsvc/snapshot.revert {vm_id} {snapshot_id}')
+            ssh.execute_command(f'vim-cmd vmsvc/snapshot.remove {vm_id} {snapshot_id}')
 
-    if ssh:
-        ssh.close()
+        if ssh:
+            ssh.close()
