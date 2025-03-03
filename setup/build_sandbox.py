@@ -131,7 +131,9 @@ class WindowsSetup(BaseSetup):
         logging.info(f'✅ VM Created: {vm_id}')
 
         self.sshclient.execute_command(f'vmkfstools -X {self.disk_count}g {self.vmdk_path}')
-        self.sshclient.execute_command(f'sed -i -e "/^guestOS /d" {self.vmx_path}')
+        self.sshclient.execute_command(f'sed -i -e \'s/^scsi0.virtualDev .*/scsi0.virtualDev = "lsisas1068"/\' {self.vmx_path}')
+        self.sshclient.execute_command(f'sed -i -e \'s/^guestOS .*/guestOS = "windows9-64"/\' {self.vmx_path}')
+        
 
         append_vmx_command = f"""cat >> {self.vmx_path} <<'EOF'
 {self.vmx_content}
