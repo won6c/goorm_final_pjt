@@ -3,7 +3,7 @@ import os
 # 🔹 [1] Core setting value
 # ==========================
 
-ISO_URL = ''  # To download iso_path(insert 💨)
+ISO_URL = 'https://dl.hausmer.com/pub/VMware-VMvisor-Installer-8.0U3b-24280767.iso'  # To download iso_path(insert 💨)
 
 ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
 ENCODING = 'windows-949-2000'  # When Korean in file name & directory name
@@ -16,21 +16,20 @@ DISK_COUNT = 142        # Disk size (GB): normal 142GB
 NETWORK_TYPE = 'nat'    # network method
 
 # ESXi server infomation
-HOST = ''         # ESXi's IP(insert 💨)
-USER = 'root'     # ESXi's Username
-PASSWORD = ''     # ESXi's Password(insert 💨)
-SAVING_PATH = ''  # ESXi's Base path saving file
+HOST = '192.168.117.152'                 # ESXi's IP(insert 💨)
+USER = 'root'             # ESXi's Username
+PASSWORD = 'rnfma1!'      # ESXi's Password(insert 💨)
 
 # Windows's inner setting
 WINDOWS_CPU_COUNT = 2     # Total CPU count
-WINDOWS_RAN_COUNT = 2048  # RAM size (MB): Normal half ESXi's RAM
-WINDOWS_DISK_COUNT = 60   # Disk size (GB): Normal 60GB
+WINDOWS_RAN_COUNT = 4096  # RAM size (MB): Normal half ESXi's RAM
+WINDOWS_DISK_COUNT = 48   # Disk size (GB): Normal 48GB
 
 # Windows server infomation
-WINDOWS_HOST = ''         # Windows's IP(insert 💨)
-WINDOWS_USER = ''         # Windows's Username(insert 💨)
-WINDOWS_PASSWORD = ''     # Windows's Password(insert 💨)
-WINDOWS_SAVING_PATH = ''  # Windows's Base path saving file
+WINDOWS_HOST = '192.168.117.167'         # Windows's IP(insert 💨)
+WINDOWS_USER = 'a'         # Windows's Username(insert 💨)
+WINDOWS_PASSWORD = 'a'     # Windows's Password(insert 💨)
+WINDOWS_SAVING_PATH = r'C:\Users\a'  # Windows's Base path saving file(insert 💨)
 
 # ==========================
 # 🔹 [2] Path setting
@@ -49,11 +48,9 @@ ISO_PATH = os.path.join(WORKING_DIR, ISO_NAME)
 VMX_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmx')
 VMDK_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmdk')
 
-WINDOWS_NAME = 'windows_sandbox'
+WINDOWS_NAME = 'Windows_sandbox'
 WINDOWS_WORKING_DIR = '/vmfs/volumes/datastore1'
-WINDOWS_ISO_PATH = r''  # Windows_iso_path(insert 💨)
-WINDOWS_VMX_PATH = f'{WINDOWS_WORKING_DIR}/{WINDOWS_NAME}/{WINDOWS_NAME}.vmx'
-WINDOWS_VMDK_PATH = f'{WINDOWS_WORKING_DIR}/{WINDOWS_NAME}/{WINDOWS_NAME}.vmdk'
+WINDOWS_ISO_PATH = r'C:\Users\admin\Downloads\Windows.iso'  # Windows_iso_path(insert 💨)
 
 # ==========================
 # 🔹 [3] VMware execute file path
@@ -118,7 +115,7 @@ floppy0.present = "FALSE"
 WINDOWS_VMX_CONTENT = f"""numvcpus = "{WINDOWS_CPU_COUNT}"
 memSize = "{WINDOWS_RAN_COUNT}"
 guestOS = "windows9-64"
-ethernet0.virtualDev = "vmxnet3"
+ethernet0.virtualDev = "e1000e"
 ethernet0.networkName = "VM Network"
 ethernet0.addressType = "generated"
 ethernet0.wakeOnPcktRcv = "FALSE"
@@ -127,14 +124,13 @@ ethernet0.present = "TRUE"
 sata0.present = "TRUE"
 sata0:0.present = "TRUE"
 sata0:0.deviceType = "cdrom-image"
-sata0:0.fileName = "/vmfs/volumes/datastore1/iso/Windows.iso"
+sata0:0.fileName = "{WINDOWS_WORKING_DIR}/Windows.iso"
 """
 
 # ==========================
 # 🔹 [45] ELK Setting (elk_sender.py)
 # ==========================
 
-VM1_TEMP_DIR = '/home/vm1/temporary'
 ELASTICSEARCH_URL = 'http://3.36.50.236:9200'
 KIBANA_URL = 'http://3.36.50.236:5601'
 
@@ -144,3 +140,4 @@ DATA_VIEW_ID = 'malware-data-view'
 
 HEADERS_KBN_XSRF = 'true'
 HEADERS_CONTENT_TYPE = 'application/json'
+
