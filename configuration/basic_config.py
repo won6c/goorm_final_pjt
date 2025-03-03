@@ -3,7 +3,7 @@ import os
 # 🔹 [1] Core setting value
 # ==========================
 
-ISO_URL = 'https://dl.hausmer.com/pub/VMware-VMvisor-Installer-8.0U3b-24280767.iso'  # To download iso_path(insert 💨)
+ISO_URL = ''  # To download iso_path(insert 💨)
 
 ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
 ENCODING = 'windows-949-2000'  # When Korean in file name & directory name
@@ -16,9 +16,9 @@ DISK_COUNT = 142        # Disk size (GB): normal 142GB
 NETWORK_TYPE = 'nat'    # network method
 
 # ESXi server infomation
-HOST = '192.168.117.152'                 # ESXi's IP(insert 💨)
-USER = 'root'             # ESXi's Username
-PASSWORD = 'rnfma1!'      # ESXi's Password(insert 💨)
+HOST = 'ip'    # ESXi's IP(insert 💨)
+USER = 'root'  # ESXi's Username
+PASSWORD = ''  # ESXi's Password(insert 💨)
 
 # Windows's inner setting
 WINDOWS_CPU_COUNT = 2     # Total CPU count
@@ -26,10 +26,10 @@ WINDOWS_RAN_COUNT = 4096  # RAM size (MB): Normal half ESXi's RAM
 WINDOWS_DISK_COUNT = 48   # Disk size (GB): Normal 48GB
 
 # Windows server infomation
-WINDOWS_HOST = '192.168.117.167'         # Windows's IP(insert 💨)
-WINDOWS_USER = 'a'         # Windows's Username(insert 💨)
-WINDOWS_PASSWORD = 'a'     # Windows's Password(insert 💨)
-WINDOWS_SAVING_PATH = r'C:\Users\a'  # Windows's Base path saving file(insert 💨)
+WINDOWS_HOST = 'ip'                    # Windows's IP(insert 💨)
+WINDOWS_USER = 'user'                  # Windows's Username(insert 💨)
+WINDOWS_PASSWORD = ''                  # Windows's Password(insert 💨)
+WINDOWS_SAVING_PATH = 'C:\Users\user'  # Windows's Base path saving file(insert 💨)
 
 # ==========================
 # 🔹 [2] Path setting
@@ -114,17 +114,25 @@ floppy0.present = "FALSE"
 
 WINDOWS_VMX_CONTENT = f"""numvcpus = "{WINDOWS_CPU_COUNT}"
 memSize = "{WINDOWS_RAN_COUNT}"
-guestOS = "windows9-64"
 ethernet0.virtualDev = "e1000e"
 ethernet0.networkName = "VM Network"
 ethernet0.addressType = "generated"
 ethernet0.wakeOnPcktRcv = "FALSE"
-ethernet0.uptCompatibility = "TRUE"
 ethernet0.present = "TRUE"
 sata0.present = "TRUE"
 sata0:0.present = "TRUE"
 sata0:0.deviceType = "cdrom-image"
-sata0:0.fileName = "{WINDOWS_WORKING_DIR}/Windows.iso"
+sata0:0.fileName = "{WINDOWS_WORKING_DIR}/iso/Windows.iso"
+powerType.suspend = "soft"
+firmware = "efi"
+uefi.secureBoot.enabled = "TRUE"
+svga.autodetect = "TRUE"
+svga.vramSize = "16777216"
+usb_xhci:4.present = "TRUE"
+usb_xhci.present = "TRUE"
+usb_xhci:4.deviceType = "hid"
+usb_xhci:4.port = "4"
+usb_xhci:4.parent = "-1"
 """
 
 # ==========================
