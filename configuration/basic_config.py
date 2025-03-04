@@ -134,18 +134,3 @@ usb_xhci:4.deviceType = "hid"
 usb_xhci:4.port = "4"
 usb_xhci:4.parent = "-1"
 """
-
-# ==========================
-# 🔹 [45] ELK Setting (elk_sender.py)
-# ==========================
-
-ELASTICSEARCH_URL = 'http://3.36.50.236:9200'
-KIBANA_URL = 'http://3.36.50.236:5601'
-
-INDEX_NAME = 'malware-analysis-*'
-INDEX_PATTERN_TITLE = 'malware-analysis-*'
-DATA_VIEW_ID = 'malware-data-view'
-
-HEADERS_KBN_XSRF = 'true'
-HEADERS_CONTENT_TYPE = 'application/json'
-
