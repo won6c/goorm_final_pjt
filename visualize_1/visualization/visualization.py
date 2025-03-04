@@ -1,74 +1,62 @@
-#!/usr/bin/env python3
-import os
 import json
-import requests
-import yaml
 import logging
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+import requests
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+AWS_IP = '13.209.85.163'
+KIBANA_URL = f'http://{AWS_IP}:5601'
+ELASTICSEARCH_URL = f'http://{AWS_IP}:9200'
+
+INDEX_NAME = 'malware-analysis'
+INDEX_PATTERN_TITLE = 'malware-analysis' # 인덱스 패턴 제목 (Kibana 데이터 뷰 생성 시 사용)
+DATA_VIEW_ID = 'malware-data-view' # 데이터 뷰 고유 ID (옵션 - 미리 정의된 ID가 있다면 사용, 없으면 빈 값으로 두세요)
+
 
 class Visualization:
-    def __init__(self, config_file="config.yaml"):
-        # 설정 파일 로드
-        self.config = self.load_config(config_file)
-        # Kibana / Elasticsearch 설정
-        self.KIBANA_URL = self.config.get("kibana_url", "http://localhost:5601")
-        self.HEADERS = self.config.get("headers", {"kbn-xsrf": "true", "Content-Type": "application/json"})
-        self.INDEX_PATTERN_TITLE = self.config.get("index_pattern_title", "malware-analysis-*")
-        self.DATA_VIEW_ID = self.config.get("data_view_id", "malware-data-view")
-        self.INDEX_PATTERN = None  # 실제 get_data_view_id() 로드 후 반영
-
-    def load_config(self, config_file):
-        """Load config from YAML file."""
-        if not os.path.exists(config_file):
-            logging.warning(f"Config file not found: {config_file}")
-            return {}
-        with open(config_file, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f) or {}
+    def __init__(self):
+        self.headers = {'kbn-xsrf': 'true', 'Content-Type': 'application/json'}
+        self.data_view_id = DATA_VIEW_ID
+        self.index_pattern = None  # 실제 get_data_view_id() 로드 후 반영
 
     def create_data_view(self):
         """Create Kibana Data View."""
-        url = f"{self.KIBANA_URL}/api/data_views/data_view"
+        url = f'{KIBANA_URL}/api/data_views/data_view'
         payload = {
             "data_view": {
-                "title": self.INDEX_PATTERN_TITLE,
+                "title": INDEX_PATTERN_TITLE,
                 "timeFieldName": "@timestamp"
             }
         }
-        response = requests.post(url, headers=self.HEADERS, json=payload)
+        response = requests.post(url, headers=self.headers, json=payload)
         if response.status_code in (200, 201):
-            logging.info("Data view created successfully.")
+            logging.info('✅ Data view created successfully.')
         elif response.status_code == 409:
-            logging.info("Data view already exists.")
+            logging.info('⚠️ Data view already exists.')
         else:
-            logging.error(f"Error creating data view: {response.status_code} {response.text}")
-
-        # 실제 데이터 뷰 고유 ID를 가져옴
-        self.INDEX_PATTERN = self.get_data_view_id()
-        if self.INDEX_PATTERN:
-            logging.info(f"Using data view ID: {self.INDEX_PATTERN}")
-        else:
-            logging.error("Could not retrieve data view ID.")
+            logging.error(f'❌ Error creating data view: {response.status_code} {response.text}')
 
     def get_data_view_id(self):
         """Get actual data_view ID from Kibana."""
-        url = f"{self.KIBANA_URL}/api/data_views"
-        response = requests.get(url, headers=self.HEADERS)
+        url = f'{KIBANA_URL}/api/data_views'
+        response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
-            data_views = response.json().get("data_view", [])
+            data_views = response.json().get('data_view', [])
             for view in data_views:
-                if view.get("title") == self.INDEX_PATTERN_TITLE:
-                    return view["id"]
-        logging.error(f"Data view '{self.INDEX_PATTERN_TITLE}' not found.")
+                if view.get('title') == INDEX_PATTERN_TITLE:
+                    logging.info(f'✅ Using data view ID: {self.index_pattern}')
+                    return view['id']
+        logging.error(f'Data view "{INDEX_PATTERN_TITLE}" not found.')
         return None
 
-    def create_table_visualization(self, vis_id, title, agg_definitions, description=""):
+    def create_table_visualization(self, vis_id, title, agg_definitions, description=''):
         """Create a table visualization in Kibana."""
-        if not self.INDEX_PATTERN:
-            logging.error("INDEX_PATTERN is None. Data view must be created or retrieved first.")
+        if not self.index_pattern:
+            logging.error('I❌ NDEX_PATTERN is None. Data view must be created or retrieved first.')
             return
 
-        url = f"{self.KIBANA_URL}/api/saved_objects/visualization/{vis_id}"
+        url = f'{KIBANA_URL}/api/saved_objects/visualization/{vis_id}'
         vis_state = {
             "title": title,
             "type": "table",
@@ -88,26 +76,26 @@ class Visualization:
                 "version": 1,
                 "kibanaSavedObjectMeta": {
                     "searchSourceJSON": json.dumps({
-                        "index": self.INDEX_PATTERN,
+                        "index": self.index_pattern,
                         "query": {"query": "", "language": "kuery"},
                         "filter": []
                     })
                 }
             }
         }
-        resp = requests.post(url, headers=self.HEADERS, data=json.dumps(payload))
+        resp = requests.post(url, headers=self.headers, data=json.dumps(payload))
         if resp.status_code in (200, 201):
-            logging.info(f"Table visualization '{vis_id}' created successfully.")
+            logging.info(f'Table visualization "{vis_id}" created successfully.')
         else:
-            logging.error(f"Error creating table visualization '{vis_id}': {resp.status_code} {resp.text}")
+            logging.error(f'Error creating table visualization "{vis_id}": {resp.status_code} {resp.text}')
 
     def create_line_chart_visualization(self, vis_id, title):
         """Create a line chart visualization in Kibana."""
-        if not self.INDEX_PATTERN:
-            logging.error("INDEX_PATTERN is None. Data view must be created or retrieved first.")
+        if not self.index_pattern:
+            logging.error('INDEX_PATTERN is None. Data view must be created or retrieved first.')
             return
 
-        url = f"{self.KIBANA_URL}/api/saved_objects/visualization/{vis_id}"
+        url = f'{KIBANA_URL}/api/saved_objects/visualization/{vis_id}'
         vis_state = {
             "title": title,
             "type": "line",
@@ -150,23 +138,23 @@ class Visualization:
                 "version": 1,
                 "kibanaSavedObjectMeta": {
                     "searchSourceJSON": json.dumps({
-                        "index": self.INDEX_PATTERN,
+                        "index": self.index_pattern,
                         "query": {"query": "", "language": "kuery"},
                         "filter": []
                     })
                 }
             }
         }
-        resp = requests.post(url, headers=self.HEADERS, data=json.dumps(payload))
+        resp = requests.post(url, headers=self.headers, data=json.dumps(payload))
         if resp.status_code in (200, 201):
-            logging.info(f"Line chart visualization '{vis_id}' created successfully.")
+            logging.info(f'Line chart visualization "{vis_id}" created successfully.')
         else:
-            logging.error(f"Error creating line chart visualization '{vis_id}': {resp.status_code} {resp.text}")
+            logging.error(f'Error creating line chart visualization "{vis_id}": {resp.status_code} {resp.text}')
 
     def create_dashboard(self):
         """Create or update the 'malware-analysis-dashboard' dashboard."""
-        dashboard_id = "malware-analysis-dashboard"
-        url = f"{self.KIBANA_URL}/api/saved_objects/dashboard/{dashboard_id}"
+        dashboard_id = 'malware-analysis-dashboard'
+        url = f'{KIBANA_URL}/api/saved_objects/dashboard/{dashboard_id}'
         panels = [
             {"panelIndex": "1", "gridData": {"x": 0, "y": 0, "w": 48, "h": 8, "i": "1"}, "version": "8.15.1", "panelRefName": "panel_A1"},
             {"panelIndex": "2", "gridData": {"x": 0, "y": 8, "w": 16, "h": 8, "i": "2"}, "version": "8.15.1", "panelRefName": "panel_B1"},
@@ -199,23 +187,26 @@ class Visualization:
                 {"id": "sectionC4-viz", "name": "panel_C4", "type": "visualization"}
             ]
         }
-        response = requests.post(url, headers=self.HEADERS, data=json.dumps(dashboard_payload))
+        response = requests.post(url, headers=self.headers, data=json.dumps(dashboard_payload))
         if response.status_code in (200, 201):
-            logging.info("Dashboard created successfully:")
+            logging.info('Dashboard created successfully:')
             logging.info(response.json())
         elif response.status_code == 409:
-            logging.info(f"Dashboard '{dashboard_id}' already exists. Trying to update.")
-            response = requests.put(url, headers=self.HEADERS, data=json.dumps(dashboard_payload))
+            logging.info(f'Dashboard "{dashboard_id}" already exists. Trying to update.')
+            response = requests.put(url, headers=self.headers, data=json.dumps(dashboard_payload))
             if response.status_code in (200, 201):
-                logging.info(f"Dashboard '{dashboard_id}' updated successfully.")
+                logging.info(f'Dashboard "{dashboard_id}" updated successfully.')
             else:
-                logging.error(f"Error updating dashboard '{dashboard_id}': {response.status_code} {response.text}")
+                logging.error(f'Error updating dashboard "{dashboard_id}": {response.status_code} {response.text}')
         else:
-            logging.error(f"Error creating dashboard: {response.status_code} {response.text}")
+            logging.error(f'Error creating dashboard: {response.status_code} {response.text}')
 
     def build_dashboard(self):
         """Perform the entire sequence of building the dashboard: create data view, create visualizations, create dashboard."""
         self.create_data_view()
+        
+        # 실제 데이터 뷰 고유 ID를 가져옴
+        self.index_pattern = self.get_data_view_id()
 
         # 예시: A1 (File / Hash / Score) 테이블
         agg_table_A1 = [
@@ -225,27 +216,21 @@ class Visualization:
             {"id": "4", "enabled": True, "type": "terms", "schema": "bucket", "params": {"field": "detection_result.keyword", "size": 1}}
         ]
         self.create_table_visualization(
-            vis_id="sectionA1-viz",
-            title="Section A - A1: File / Hash / Score",
+            vis_id='sectionA1-viz',
+            title='Section A - A1: File / Hash / Score',
             agg_definitions=agg_table_A1,
-            description="Shows basic file info"
+            description='Shows basic file info'
         )
 
         # 필요에 따라 다른 테이블/라인 차트 시각화도 추가
-        # 예: self.create_line_chart_visualization("sectionC1-viz", "Section C - C1: Process Activity")
+        # 예: self.create_line_chart_visualization('sectionC1-viz', 'Section C - C1: Process Activity')
 
         # 마지막에 대시보드 생성
         self.create_dashboard()
 
 def main():
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Set up Kibana dashboard using config.yaml")
-    parser.add_argument("--config", default="config.yaml", help="Path to config file")
-    args = parser.parse_args()
-
-    visualization = Visualization(config_file=args.config)
+    visualization = Visualization()
     visualization.build_dashboard()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
