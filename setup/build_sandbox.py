@@ -3,12 +3,13 @@ import re
 import subprocess
 from abc import ABC, abstractmethod
 
-from setup.utils import logging, make_folder, cmd_run_admin, download_iso, create_file, SSHClientManager, SSHEnable
+from utils.utils import logging, make_folder, cmd_run_admin, download_iso, create_file
+from utils.ssh_utils import SSHClientManager, SSHEnable
 from configuration.basic_config import VM_DIR, WORKING_DIR
+
 
 class BaseSetup(ABC):
     """Abstract class: Base class for ESXi & Windows VM setup"""
-    
     @abstractmethod
     def process(self):
         """Run automated code"""
@@ -69,18 +70,18 @@ class ESXiSetup(BaseSetup):
 
     def process(self):
         make_folder(VM_DIR)
-        
+
         enable_nested_virtualization = os.path.join(WORKING_DIR, 'enable_nested_virtualization.txt')
         cmd_run_admin(f'bcdedit /enum > {enable_nested_virtualization}')
         with open(enable_nested_virtualization, 'r') as file:
             content = file.read()
         if not re.search(r'hypervisorlaunchtype\s+Off', content):
             cmd_run_admin(rf'bcdedit /set hypervisorlaunchtype off & del {enable_nested_virtualization} & shutdown \r \t 0')
-        
+
         download_iso(self.iso_path, self.iso_url)
         create_file(self.vmx_path, self.vmx_content)
         self.create_vmdk()
-        
+
         self.launch_vmware()
 
 class WindowsSetup(BaseSetup):
@@ -107,14 +108,13 @@ class WindowsSetup(BaseSetup):
         self.disk_count = disk_count
         self.vmx_path = f'{working_dir}/{windows_name}/{windows_name}.vmx'
         self.vmdk_path = f'{working_dir}/{windows_name}/{windows_name}.vmdk'
-        
+
         self.iso_dir = f'{self.working_dir}/iso'
         self.windows_dir = f'{self.working_dir}/{self.windows_name}'
         self.iso_filename = os.path.basename(self.iso_path)
 
     def process(self) -> None:
         SSHEnable(self.host, self.username, self.password).ssh_enable()
-        
         self.sshclient.connect()
 
         self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')

@@ -2,7 +2,8 @@ import argparse
 
 from configuration.basic_config import *
 from setup.build_sandbox import ESXiSetup, WindowsSetup
-from setup.utils import SSHClientManager, SSHEnable, ObtainIP
+from utils.ssh_utils import SSHClientManager, SSHEnable
+from utils.image2text_utils import ObtainIP
 
 
 def init_argparse() -> argparse.ArgumentParser:
