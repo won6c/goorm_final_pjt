@@ -1,4 +1,5 @@
 import os
+import sys
 
 TOOLS = {
     "EXIFTOOL_PATH":"exiftool\\exiftool.exe",
@@ -50,6 +51,7 @@ PROCDUMP_PATH = os.path.join(TOOLS_PATH,TOOLS["PROCDUMP_PATH"])
 AWS_IP = ""
 ELASTICSEARCH_URL = f'http://{AWS_IP}:9200'
 KIBANA_URL = f'http://{AWS_IP}:5601'
+INDEX_NAME = f'{os.path.basename(sys.argv[1])}-*'
 
 DUMP_FILE = "memory.dmp"
 

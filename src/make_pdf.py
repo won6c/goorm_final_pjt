@@ -208,7 +208,6 @@ def create_pdf_report(json_data, output_filename):
             story.append(Spacer(1, 0.2*inch))
 
     llm = static.get("llm")
-    print(llm)
     if llm:
         if vt_result:
             story.append(Paragraph("(4) LLM Analysis Result", styles['Heading2Indent']))
@@ -277,6 +276,7 @@ def create_pdf_report(json_data, output_filename):
     # event_security 처리
     event_security = dynamic.get("event_security")
     if event_security and isinstance(event_security, dict):
+        story.append(Paragraph("Security Event", styles['Heading3Indent']))
         for ev_key, ev_data in event_security.items():
             if not ev_data:
                 continue
@@ -302,8 +302,9 @@ def create_pdf_report(json_data, output_filename):
             story.append(Spacer(1, 0.2*inch))
     
     # event_system 처리
-    event_system = dynamic.get("event_system")
+    event_system = dynamic.get("event_system").get("system")
     if event_system and isinstance(event_system, dict):
+        story.append(Paragraph("System Event", styles['Heading3Indent']))
         for ev_key, ev_data in event_system.items():
             if not ev_data:
                 continue
@@ -588,5 +589,6 @@ if __name__ == "__main__":
         if isinstance(json_data, str):
             json_data = json.loads(json_data)
         create_pdf_report(json_data, "styled_report.pdf")
+        logging.info("PDF build successful")
     else:
         logging.error("Elasticsearch에서 문서를 찾을 수 없습니다.")
