@@ -23,7 +23,7 @@ def get_virustotal_report(file_hash):
     try:
         response = requests.get(url, headers=headers)
     except Exception as e:
-        return  {"Error":f"Status Code: {None}", "Response":f"{e.__class__.__name__}"}
+        return  {}
 
     if response.status_code == 200:
         data = response.json()
@@ -36,13 +36,13 @@ def get_virustotal_report(file_hash):
         naive_score = malicious_count * 2 + suspicious_count
 
         malicious_engines = {
-            engine: result_info.get("result", "N/A")
+            {"engine":engine,"result": result_info.get("result", "N/A")}
             for engine, result_info in last_analysis_results.items()
             if result_info.get("category") == "malicious"
         }
 
         suspicious_engines = {
-            engine: result_info.get("result", "N/A")
+            {"engine":engine,"result": result_info.get("result", "N/A")}
             for engine, result_info in last_analysis_results.items()
             if result_info.get("category") == "suspicious"
         }
@@ -102,7 +102,8 @@ def scan_files(scan_folder_arg = None):
         print(f"\n🔍 파일 검사 중: {file_path}")
 
         vt_result = get_virustotal_report(sha256)
-        results[file_path] = vt_result
+        
+        results= vt_result
 
     # JSON 파일 저장
     #output_dir = os.path.join(os.path.dirname(__file__), "..", "OUTPUT") # OUTPUT 폴더 경로

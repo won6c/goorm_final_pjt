@@ -165,7 +165,6 @@ if (writeFile) {
                 type: "WriteFile",
                 event: "called",
                 thread_id: Process.getCurrentThreadId(),
-                bufferContent: content,
                 timestamp: getTimeStamp()
             });
         }

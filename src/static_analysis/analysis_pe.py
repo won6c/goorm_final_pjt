@@ -118,7 +118,7 @@ def get_file_hashes(file_path):
             while chunk := f.read(4096):
                 for algo in hashes.values():
                     algo.update(chunk)        
-        return {name: algo.hexdigest() for name, algo in hashes.items()}  # 해시값 반환
+        return [{"hash_type": name, "hash_value": algo.hexdigest()} for name, algo in hashes.items()]
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다. 파일 경로를 확인하세요.")
     except Exception as e:
@@ -158,11 +158,11 @@ def get_imported_libraries(file_path):
 
         if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
             for entry in pe.DIRECTORY_ENTRY_IMPORT:
-                dll_name = f"📂{entry.dll.decode()}"
+                dll_name = f"{entry.dll.decode()}"
                 functions = [imp.name.decode() if imp.name else f"Ordinal_{imp.ordinal}" for imp in entry.imports]
                 imported_libs[dll_name] = {
                     "total_imported_libs": len(functions),
-                    "🚨suspicious🚨(의심됨)": [func for func in functions if func in suspicious_apis],
+                    "suspicious)": [func for func in functions if func in suspicious_apis],
                     "functions": functions
                 }
         else:

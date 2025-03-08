@@ -36,11 +36,11 @@
                     "entropy": 4.91
                 }
             ],
-            "hashes": {
-                "MD5": "70d41eadb33a9d48d112031733406655",
-                "SHA1": "013c77d3050346bcb2af4a49b141320467ed8e41",
-                "SHA256": "d36727b07105a6d517cc0b0919770d027a938b7c5cb6784572cfe346a87c4815"
-            },
+            "hashes":[
+                    {"hash_type": "MD5", "hash_value": "70d41eadb33a9d48d112031733406655"},
+                    {"hash_type": "SHA1", "hash_value": "013c77d3050346bcb2af4a49b141320467ed8e41"},
+                    {"hash_type": "SHA256", "hash_value": "d36727b07105a6d517cc0b0919770d027a938b7c5cb6784572cfe346a87c4815"}
+                ],
             "pe_signature": {
                 "MZ_signature": "4D5A",
                 "PE_signature": "50450000",
@@ -121,10 +121,79 @@
             }
         },
         "vt_result": {
-            "C:\\Users\\User\\Desktop\\DestDir\\04.exe": {
-                "Error": "Status Code: 401",
-                "Response": "{\"error\": {\"code\": \"AuthenticationRequiredError\", \"message\": \"X-Apikey header is missing\"}}"
-            }
+                "MD5": "09fde57aa466ecc531b93d616ba6a6cd",
+                "SHA1": "ff9e3df7cce6b4201a08f12a59c62f2b8b11ab8a",
+                "SHA256": "043fdfe5e6b0c592331d5ef5a3a003c0eb05009137072cfc6ed6182d05f56768",
+                "Filenames": [
+                    "Bootstrapper.exe",
+                    "043fdfe5e6b0c592331d5ef5a3a003c0eb05009137072cfc6ed6182d05f56768.exe",
+                    "lummastealer.exe",
+                    "Music.exe",
+                    "Unconfirmed 280362.crdownload"
+                ],
+                "Malicious_Count": 54,
+                "Suspicious_Count": 0,
+                "Harmless_Count": 0,
+                "Undetected_Count": 18,
+                "VT_Reputation(VirusTotal 내부 평판 점수)": -11,
+                "Naive Score(단순 계산 예시)": 108,
+                "Malicious_Engines": [
+                    {"engine": "Bkav", "result": "W32.AIDetectMalware"},
+                    {"engine": "Lionic", "result": "Trojan.Win32.ClipBanker.tscz"},
+                    {"engine": "Elastic", "result": "malicious (high confidence)"},
+                    {"engine": "MicroWorld-eScan", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "FireEye", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "CAT-QuickHeal", "result": "Trojan.Ghanarava.1737877009a6a6cd"},
+                    {"engine": "Skyhigh", "result": "BehavesLike.Win32.Jeefo.th"},
+                    {"engine": "McAfee", "result": "Artemis!09FDE57AA466"},
+                    {"engine": "Cylance", "result": "Unsafe"},
+                    {"engine": "Sangfor", "result": "Trojan.Win32.Save.a"},
+                    {"engine": "K7AntiVirus", "result": "Trojan ( 005b9b2a1 )"},
+                    {"engine": "Alibaba", "result": "TrojanPSW:Win32/Coins.f885fcfb"},
+                    {"engine": "K7GW", "result": "Trojan ( 005b9b2a1 )"},
+                    {"engine": "CrowdStrike", "result": "win/malicious_confidence_100% (W)"},
+                    {"engine": "VirIT", "result": "Trojan.Win32.Genus.XLN"},
+                    {"engine": "Symantec", "result": "ML.Attribute.HighConfidence"},
+                    {"engine": "ESET-NOD32", "result": "a variant of WinGo/TrojanDropper.Agent.EK"},
+                    {"engine": "Paloalto", "result": "generic.ml"},
+                    {"engine": "Kaspersky", "result": "Trojan-PSW.Win32.Coins.ailt"},
+                    {"engine": "BitDefender", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "NANO-Antivirus", "result": "Trojan.Win32.Coins.kvjvlk"},
+                    {"engine": "Avast", "result": "Win32:Malware-gen"},
+                    {"engine": "Rising", "result": "Trojan.ShellCodeRunner!1.12748 (CLASSIC)"},
+                    {"engine": "Emsisoft", "result": "Trojan.GenericKD.75466708 (B)"},
+                    {"engine": "F-Secure", "result": "Trojan.TR/AVI.Agent.rrtmq"},
+                    {"engine": "DrWeb", "result": "Trojan.Inject5.14993"},
+                    {"engine": "VIPRE", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "McAfeeD", "result": "ti!043FDFE5E6B0"},
+                    {"engine": "Trapmine", "result": "malicious.moderate.ml.score"},
+                    {"engine": "Sophos", "result": "Mal/Generic-S"},
+                    {"engine": "Ikarus", "result": "Trojan-Dropper.WinGo.Agent"},
+                    {"engine": "Google", "result": "Detected"},
+                    {"engine": "Avira", "result": "TR/AVI.Agent.rrtmq"},
+                    {"engine": "Varist", "result": "W32/ABTrojan.AHFJ-3349"},
+                    {"engine": "Antiy-AVL", "result": "GrayWare/Win32.Wacapew"},
+                    {"engine": "Kingsoft", "result": "Win32.Trojan-PSW.Coins.ailt"},
+                    {"engine": "Microsoft", "result": "Trojan:Win32/Wacatac.B!ml"},
+                    {"engine": "Gridinsoft", "result": "Spy.Win32.Gen.tr"},
+                    {"engine": "Xcitium", "result": "Malware@#26m1xupu8df3e"},
+                    {"engine": "Arcabit", "result": "Trojan.Generic.D47F87D4"},
+                    {"engine": "GData", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "AhnLab-V3", "result": "Malware/Win.Generic.C5719408"},
+                    {"engine": "VBA32", "result": "BScope.TrojanPSW.Agent"},
+                    {"engine": "ALYac", "result": "Trojan.GenericKD.75466708"},
+                    {"engine": "Malwarebytes", "result": "Trojan.Dropper.GO"},
+                    {"engine": "Panda", "result": "Trj/Chgt.AD"},
+                    {"engine": "Tencent", "result": "Win32.Trojan-QQPass.QQRob.Ozfl"},
+                    {"engine": "CTX", "result": "exe.trojan.generic"},
+                    {"engine": "huorong", "result": "TrojanDropper/W64.Agent.bo"},
+                    {"engine": "MaxSecure", "result": "Trojan.Malware.318748744.susgen"},
+                    {"engine": "Fortinet", "result": "W32/Dropper.ES!tr"},
+                    {"engine": "AVG", "result": "Win32:Malware-gen"},
+                    {"engine": "DeepInstinct", "result": "MALICIOUS"},
+                    {"engine": "alibabacloud", "result": "Trojan[dropper]:Multi/Wacatac.B9nj"}
+                ],
+                "Suspicious_Engines": []
         }
     },
     "DynamicAnalysis": {
@@ -9357,7 +9426,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 298
+                    "payload_len": "298"
                 },
                 {
                     "protocol": "TCP",
@@ -9373,7 +9442,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 99
+                    "payload_len":"99"
                 },
                 {
                     "protocol": "TCP",
@@ -9381,7 +9450,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 369
+                    "payload_len": "369"
                 },
                 {
                     "protocol": "TCP",
@@ -9397,7 +9466,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 1460
+                    "payload_len": "1460"
                 },
                 {
                     "protocol": "TCP",
@@ -9405,7 +9474,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 1460
+                    "payload_len": "1460"
                 },
                 {
                     "protocol": "TCP",
@@ -9413,7 +9482,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 1029
+                    "payload_len": "1029"
                 },
                 {
                     "protocol": "TCP",
@@ -9429,23 +9498,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 74
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "20.205.253.130",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49972,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "10.0.2.15",
-                    "sport": 49972,
-                    "dst": "20.205.253.130",
-                    "dport": 443,
-                    "payload_len": 402
+                    "payload_len": "74"
                 },
                 {
                     "protocol": "TCP",
@@ -9461,7 +9514,23 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 14600
+                    "payload_len": "402"
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "20.205.253.130",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49972,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "10.0.2.15",
+                    "sport": 49972,
+                    "dst": "20.205.253.130",
+                    "dport": 443,
+                    "payload_len": "14600"
                 },
                 {
                     "protocol": "TCP",
@@ -9549,7 +9618,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 29200
+                    "payload_len": "29200"
                 },
                 {
                     "protocol": "UDP",
@@ -9725,7 +9794,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 21309
+                    "payload_len": "21309"
                 },
                 {
                     "protocol": "TCP",
@@ -9853,7 +9922,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 103
+                    "payload_len": "103"
                 },
                 {
                     "protocol": "TCP",
@@ -9869,7 +9938,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 235
+                    "payload_len": "235"
                 },
                 {
                     "protocol": "TCP",
@@ -9885,7 +9954,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 401
+                    "payload_len": "401"
                 },
                 {
                     "protocol": "TCP",
@@ -9893,7 +9962,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 6778
+                    "payload_len": "6778"
                 },
                 {
                     "protocol": "TCP",
@@ -9949,7 +10018,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 946
+                    "payload_len": "946"
                 },
                 {
                     "protocol": "TCP",
@@ -9965,7 +10034,7 @@
                     "sport": 49686,
                     "dst": "20.198.119.84",
                     "dport": 443,
-                    "payload_len": 1
+                    "payload_len": "1"
                 },
                 {
                     "protocol": "TCP",
@@ -9989,7 +10058,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 401
+                    "payload_len": "401"
                 },
                 {
                     "protocol": "TCP",
@@ -10005,7 +10074,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 7647
+                    "payload_len": "7647"
                 },
                 {
                     "protocol": "TCP",
@@ -10061,7 +10130,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 946
+                    "payload_len": "946"
                 },
                 {
                     "protocol": "TCP",
@@ -10069,7 +10138,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 402
+                    "payload_len": "402"
                 },
                 {
                     "protocol": "TCP",
@@ -10085,7 +10154,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 39222
+                    "payload_len": "39222"
                 },
                 {
                     "protocol": "TCP",
@@ -10309,7 +10378,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 235
+                    "payload_len": "235"
                 },
                 {
                     "protocol": "TCP",
@@ -10333,7 +10402,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 402
+                    "payload_len": "402"
                 },
                 {
                     "protocol": "TCP",
@@ -10349,7 +10418,7 @@
                     "sport": 49972,
                     "dst": "20.205.253.130",
                     "dport": 443,
-                    "payload_len": 25868
+                    "payload_len": "25868"
                 },
                 {
                     "protocol": "TCP",
@@ -10501,7 +10570,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49972,
-                    "payload_len": 235
+                    "payload_len": "235"
                 },
                 {
                     "protocol": "TCP",
@@ -10517,7 +10586,7 @@
                     "sport": 49720,
                     "dst": "51.132.193.105",
                     "dport": 443,
-                    "payload_len": 1
+                    "payload_len": "1"
                 },
                 {
                     "protocol": "TCP",
@@ -10533,7 +10602,7 @@
                     "sport": 49720,
                     "dst": "51.132.193.105",
                     "dport": 443,
-                    "payload_len": 118
+                    "payload_len": "118"
                 },
                 {
                     "protocol": "TCP",
@@ -10541,7 +10610,7 @@
                     "sport": 49720,
                     "dst": "51.132.193.105",
                     "dport": 443,
-                    "payload_len": 39
+                    "payload_len": "39"
                 },
                 {
                     "protocol": "TCP",
@@ -10557,7 +10626,7 @@
                     "sport": 49720,
                     "dst": "51.132.193.105",
                     "dport": 443,
-                    "payload_len": 2076
+                    "payload_len": "2076"
                 },
                 {
                     "protocol": "TCP",
@@ -10589,7 +10658,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49720,
-                    "payload_len": 39
+                    "payload_len": "39"
                 },
                 {
                     "protocol": "TCP",
@@ -10605,7 +10674,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49720,
-                    "payload_len": 99
+                    "payload_len": "99"
                 },
                 {
                     "protocol": "TCP",
@@ -10613,7 +10682,7 @@
                     "sport": 49720,
                     "dst": "51.132.193.105",
                     "dport": 443,
-                    "payload_len": 35
+                    "payload_len": "35"
                 },
                 {
                     "protocol": "TCP",
@@ -10677,7 +10746,7 @@
                     "sport": 49973,
                     "dst": "52.168.117.169",
                     "dport": 443,
-                    "payload_len": 517
+                    "payload_len": "517"
                 },
                 {
                     "protocol": "TCP",
@@ -10693,7 +10762,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49973,
-                    "payload_len": 99
+                    "payload_len": "99"
                 },
                 {
                     "protocol": "TCP",
@@ -10701,7 +10770,7 @@
                     "sport": 49973,
                     "dst": "52.168.117.169",
                     "dport": 443,
-                    "payload_len": 437
+                    "payload_len": "437"
                 },
                 {
                     "protocol": "TCP",
@@ -10717,7 +10786,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49973,
-                    "payload_len": 1460
+                    "payload_len": "1460"
                 },
                 {
                     "protocol": "TCP",
@@ -10725,7 +10794,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49973,
-                    "payload_len": 1460
+                    "payload_len": "1460"
                 },
                 {
                     "protocol": "TCP",
@@ -10733,23 +10802,7 @@
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49973,
-                    "payload_len": 1460
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "10.0.2.15",
-                    "sport": 49973,
-                    "dst": "52.168.117.169",
-                    "dport": 443,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": 152
+                    "payload_len": "1460"
                 },
                 {
                     "protocol": "TCP",
@@ -10761,59 +10814,11 @@
                 },
                 {
                     "protocol": "TCP",
-                    "src": "10.0.2.15",
-                    "sport": 49973,
-                    "dst": "52.168.117.169",
-                    "dport": 443,
-                    "payload_len": 4995
-                },
-                {
-                    "protocol": "TCP",
                     "src": "52.168.117.169",
                     "sport": 443,
                     "dst": "10.0.2.15",
                     "dport": 49973,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": ""
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": 568
-                },
-                {
-                    "protocol": "TCP",
-                    "src": "52.168.117.169",
-                    "sport": 443,
-                    "dst": "10.0.2.15",
-                    "dport": 49973,
-                    "payload_len": ""
+                    "payload_len": "152"
                 },
                 {
                     "protocol": "TCP",
@@ -10829,7 +10834,71 @@
                     "sport": 49973,
                     "dst": "52.168.117.169",
                     "dport": 443,
-                    "payload_len": 24
+                    "payload_len": "4995"
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": "568"
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "52.168.117.169",
+                    "sport": 443,
+                    "dst": "10.0.2.15",
+                    "dport": 49973,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "10.0.2.15",
+                    "sport": 49973,
+                    "dst": "52.168.117.169",
+                    "dport": 443,
+                    "payload_len": ""
+                },
+                {
+                    "protocol": "TCP",
+                    "src": "10.0.2.15",
+                    "sport": 49973,
+                    "dst": "52.168.117.169",
+                    "dport": 443,
+                    "payload_len": "24"
                 },
                 {
                     "protocol": "TCP",

@@ -1,5 +1,6 @@
 from dynamic_analysis.MA_DA import *
 from static_analysis.MA_SA import *
+from elk.elk_sender import *
 from CONFIG.config import FINAL_RESULT_OUTPUT_PATH
 import json
 import os
@@ -8,7 +9,7 @@ def process():
     if os.path.exists(FINAL_RESULT_OUTPUT_PATH):
         os.system(f'attrib -r "{FINAL_RESULT_OUTPUT_PATH}"')
         os.remove(FINAL_RESULT_OUTPUT_PATH)
-
+    
     MA_SA_result = process_MA_SA()
     MA_DA_result = process_MA_DA()
 
@@ -25,7 +26,7 @@ def process():
     return json.dumps(final_result,indent=4)
 
 def main():
-    print(process())
+    send_json_to_elk(process())
 
 if __name__=="__main__":
     main()

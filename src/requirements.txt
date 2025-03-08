@@ -9,3 +9,5 @@ yara_python==4.5.1
 frida-tools
 yara-python
 python-magic-bin
+torch
+transformers
