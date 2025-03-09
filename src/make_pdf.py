@@ -407,10 +407,10 @@ def create_pdf_report(json_data, output_filename):
         # Added 처리
         added = reg.get("added")
         if added:
-            if isinstance(added, list):
+            if isinstance(added, dict):
                 added_data = [["Registry"]]
-                for item in added:
-                    added_data.append([Paragraph(item, small_style)])
+                for key, value in added.items():
+                    added_data.append([Paragraph(key+"\\"+f"{value}", small_style)])
                 col_widths = [6*inch]
             table_added = Table(added_data, colWidths=col_widths)
             table_added.setStyle(TableStyle([
@@ -449,10 +449,10 @@ def create_pdf_report(json_data, output_filename):
         # Deleted 처리
         deleted = reg.get("deleted")
         if deleted:
-            if isinstance(deleted, list):
+            if isinstance(deleted, dict):
                 del_data = [["Registry"]]
-                for item in deleted:
-                    del_data.append([Paragraph(item, small_style)])
+                for key, value in deleted.items():
+                    del_data.append([Paragraph(key+"\\"+f"{value}", small_style)])
                 col_widths = [6*inch]
             table_del = Table(del_data, colWidths=col_widths)
             table_del.setStyle(TableStyle([
