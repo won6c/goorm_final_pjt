@@ -131,7 +131,6 @@ class SSHEnable:
         driver = self.init_webdriver()
         try:
             if self.login_esxi(driver):
-                self.find_click(driver, By.XPATH, '//button[contains(@class, "btn-primary") and text()="확인"]', 3)
                 if self.find_click(driver, By.XPATH, '//div[contains(text(), "TSM-SSH")]'):
                     logging.info(f'✅ TSM-SSH service clicked successfully')
 
@@ -152,7 +151,7 @@ class SSHEnable:
                     logging.info(f'✅ TSM-SSH service clicked successfully')
 
                     if self.find_click(driver, By.XPATH, '//a[contains(@title, "중지")]'):
-                        logging.info(f'✅ Activate SSH successfully')
+                        logging.info(f'✅ Not activate SSH successfully')
         except Exception as e:
             logging.error(f'❌ Unexpected Error: [{e}]')
         finally:
