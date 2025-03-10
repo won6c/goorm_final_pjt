@@ -26,7 +26,7 @@ def option(options: argparse.Namespace) -> None:
         ESXiSetup(ISO_URL, ISO_PATH, VMX_PATH, VMDK_PATH, VMWARE_PATH, CREATE_VMDK_PATH, VMX_CONTENT, DISK_COUNT).process()
 
     if options.windows_name:
-        WindowsSetup(HOST, USER, PASSWORD, WINDOWS_ISO_, WINDOWS_ISO_PATH, WINDOWS_WORKING_DIR, options.windows_name, WINDOWS_VMX_CONTENT, WINDOWS_DISK_COUNT).process()
+        WindowsSetup(HOST, USER, PASSWORD, WINDOWS_ISO_URL, WINDOWS_ISO_PATH, WINDOWS_WORKING_DIR, options.windows_name, WINDOWS_VMX_CONTENT, WINDOWS_DISK_COUNT).process()
 
     if options.file:
         ssh = SSHClientManager(WINDOWS_HOST, WINDOWS_USER, WINDOWS_PASSWORD)
