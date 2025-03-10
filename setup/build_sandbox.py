@@ -98,9 +98,6 @@ class WindowsSetup(BaseSetup):
         disk_count: str
         ) -> None:
         self.sshclient = SSHClientManager(host, username, password)
-        self.host = host
-        self.username = username
-        self.password = password
         self.iso_path = iso_path
         self.working_dir = working_dir
         self.windows_name = windows_name
@@ -114,7 +111,6 @@ class WindowsSetup(BaseSetup):
         self.iso_filename = os.path.basename(self.iso_path)
 
     def process(self) -> None:
-        SSHEnable(self.host, self.username, self.password).ssh_enable()
         self.sshclient.connect()
 
         self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')
@@ -122,6 +118,8 @@ class WindowsSetup(BaseSetup):
         file_list, _ = self.sshclient.execute_command(f'ls {self.iso_dir}')
         if self.iso_filename not in file_list:
             self.sshclient.file_transfer(self.iso_path, self.iso_dir+'/'+self.iso_filename)
+        else:
+            logging.info(f'⚠️ ISO is already existed: {self.iso_filename}')
 
         vm_id, error = self.sshclient.execute_command(f'vim-cmd vmsvc/createdummyvm "{self.windows_name}" {self.working_dir}')
         if error or not vm_id:
