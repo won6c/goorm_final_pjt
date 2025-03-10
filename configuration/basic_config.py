@@ -3,9 +3,10 @@ import os
 # 🔹 [1] Core setting value
 # ==========================
 
-ISO_URL = ''  # To download iso_path(insert 💨)
+ISO_URL = ''          # To download iso_path(insert 💨)
+WINDOWS_ISO_URL = ''  # To download iso_path(insert 💨)
 
-ISO_NAME = 'VMware-VMvisor-Installer-8.0U3b-24280767.iso'
+ISO_NAME = 'ESXI-8.0U3B-24280767-STANDARD.iso'
 ENCODING = 'windows-949-2000'  # When Korean in file name & directory name
 # ENCODING = 'UTF-8'  # Basic
 
@@ -16,9 +17,9 @@ DISK_COUNT = 142        # Disk size (GB): normal 142GB
 NETWORK_TYPE = 'nat'    # network method
 
 # ESXi server infomation
-HOST = 'ip'    # ESXi's IP(insert 💨)
-USER = 'root'  # ESXi's Username
-PASSWORD = ''  # ESXi's Password(insert 💨)
+HOST = '192.168.117.10'  # ESXi's IP
+USER = 'root'            # ESXi's Username
+PASSWORD = 'rnfma1!'     # ESXi's Password
 
 # Windows's inner setting
 WINDOWS_CPU_COUNT = 2     # Total CPU count
@@ -26,10 +27,10 @@ WINDOWS_RAN_COUNT = 4096  # RAM size (MB): Normal half ESXi's RAM
 WINDOWS_DISK_COUNT = 48   # Disk size (GB): Normal 48GB
 
 # Windows server infomation
-WINDOWS_HOST = 'ip'                    # Windows's IP(insert 💨)
-WINDOWS_USER = 'user'                  # Windows's Username(insert 💨)
-WINDOWS_PASSWORD = ''                  # Windows's Password(insert 💨)
-WINDOWS_SAVING_PATH = 'C:\Users\user'  # Windows's Base path saving file(insert 💨)
+WINDOWS_HOST = ''                               # Windows's IP(insert 💨)
+WINDOWS_USER = 'User'                           # Windows's Username
+WINDOWS_PASSWORD = 'rnfma1!'                    # Windows's Password
+WINDOWS_SAVING_PATH = r'C:\Users\User\desktop'  # Windows's Base path saving file
 
 # ==========================
 # 🔹 [2] Path setting
@@ -50,7 +51,8 @@ VMDK_PATH = os.path.join(VM_DIR, f'{VM_NAME}.vmdk')
 
 WINDOWS_NAME = 'Windows_sandbox'
 WINDOWS_WORKING_DIR = '/vmfs/volumes/datastore1'
-WINDOWS_ISO_PATH = r'C:\Users\admin\Downloads\Windows.iso'  # Windows_iso_path(insert 💨)
+WINDOWS_ISO_NAME = 'Windows10.iso'
+WINDOWS_ISO_PATH = os.path.join(WORKING_DIR, WINDOWS_ISO_NAME)
 
 # ==========================
 # 🔹 [3] VMware execute file path
@@ -122,7 +124,7 @@ ethernet0.present = "TRUE"
 sata0.present = "TRUE"
 sata0:0.present = "TRUE"
 sata0:0.deviceType = "cdrom-image"
-sata0:0.fileName = "{WINDOWS_WORKING_DIR}/iso/Windows.iso"
+sata0:0.fileName = "{WINDOWS_WORKING_DIR}/iso/{WINDOWS_ISO_NAME}"
 powerType.suspend = "soft"
 firmware = "efi"
 uefi.secureBoot.enabled = "TRUE"
