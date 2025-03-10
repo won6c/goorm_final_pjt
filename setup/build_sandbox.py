@@ -91,6 +91,7 @@ class WindowsSetup(BaseSetup):
         host: str,
         username: str,
         password: str,
+        iso_url: str,
         iso_path: str,
         working_dir: str,
         windows_name: str,
@@ -98,6 +99,7 @@ class WindowsSetup(BaseSetup):
         disk_count: str
         ) -> None:
         self.sshclient = SSHClientManager(host, username, password)
+        self.iso_url = iso_url
         self.iso_path = iso_path
         self.working_dir = working_dir
         self.windows_name = windows_name
@@ -111,6 +113,8 @@ class WindowsSetup(BaseSetup):
         self.iso_filename = os.path.basename(self.iso_path)
 
     def process(self) -> None:
+        download_iso(self.iso_path, self.iso_url)
+
         self.sshclient.connect()
 
         self.sshclient.execute_command(f'mkdir -p {self.iso_dir}')
