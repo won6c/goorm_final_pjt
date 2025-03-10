@@ -3,7 +3,6 @@ import argparse
 from configuration.basic_config import *
 from setup.build_sandbox import ESXiSetup, WindowsSetup
 from utils.ssh_utils import SSHClientManager, SSHEnable
-from utils.image2text_utils import ObtainIP
 
 
 def init_argparse() -> argparse.ArgumentParser:
@@ -11,7 +10,6 @@ def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('-E', dest='esxi_name', action='store_true', help='Install ESXi')
     parser.add_argument('-W', dest='windows_name', nargs='?', const=WINDOWS_NAME, help='Install Windows(insert windows_name, default_name = "Windows_sandbox")')
-    parser.add_argument('-O', dest='obtain_ip', action='store_true', help='Obtain ESXi ip with capture screenshot and OCR')
 
     parser.add_argument('-F', dest='file', help='Input file path on Host to send to VM')
 
@@ -29,9 +27,6 @@ def option(options: argparse.Namespace) -> None:
 
     if options.windows_name:
         WindowsSetup(HOST, USER, PASSWORD, WINDOWS_ISO_PATH, WINDOWS_WORKING_DIR, options.windows_name, WINDOWS_VMX_CONTENT, WINDOWS_DISK_COUNT).process()
-
-    if options.obtain_ip:
-        ObtainIP().process()        
 
     if options.file:
         ssh = SSHClientManager(WINDOWS_HOST, WINDOWS_USER, WINDOWS_PASSWORD)
