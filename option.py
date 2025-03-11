@@ -1,8 +1,10 @@
 import argparse
+import json
 
 from configuration.basic_config import *
 from setup.build_sandbox import ESXiSetup, WindowsSetup
 from utils.ssh_utils import SSHClientManager, SSHEnable
+import utils.make_pdf as make_pdf
 
 
 def init_argparse() -> argparse.ArgumentParser:
@@ -17,6 +19,9 @@ def init_argparse() -> argparse.ArgumentParser:
     parser.add_argument('-N', dest='network', choices=['nat', 'only'], help='Choose network method(nat or host_only)')
     parser.add_argument('-I', dest='internet', choices=['on', 'off'], help='Enable or Disable internet')
     parser.add_argument('-SN', dest='snapshot', choices=['get', 'create', 'revert', 'remove'], help='Capture snapshot on windows')
+    
+    parser.add_argument('-exe', dest='exe', help='Input malware file name and execute python code with malware in Windows VM')
+    parser.add_argument('-O', dest='output', help='Input file name and get analysis PDF file')
     return parser
 
 
@@ -91,3 +96,11 @@ def option(options: argparse.Namespace) -> None:
 
         if ssh:
             ssh.close()
+    
+    if options.exe:
+        ssh = SSHClientManager(WINDOWS_HOST, WINDOWS_USER, WINDOWS_PASSWORD)
+        ssh.connect()
+        ssh.execute_command(rf'python C:\scr\main.py {options.exe}')
+    
+    if options.output:
+        make_pdf.process(f'{options.output}-*')

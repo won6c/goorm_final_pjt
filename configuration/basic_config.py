@@ -3,6 +3,9 @@ import os
 # 🔹 [1] Core setting value
 # ==========================
 
+AWS_IP = ''  # AWS IP(insert 💨)
+ELASTICSEARCH_URL = f'http://{AWS_IP}:9200'
+
 ISO_URL = ''          # To download iso_path(insert 💨)
 WINDOWS_ISO_URL = ''  # To download iso_path(insert 💨)
 
