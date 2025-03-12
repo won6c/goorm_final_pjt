@@ -2,7 +2,7 @@ from dynamic_analysis.dlls.dll_list import *
 from dynamic_analysis.frida_py.frida_stalker import *
 from dynamic_analysis.network.network_packet import *
 from dynamic_analysis.detect.watchdog_src import *
-from dynamic_analysis.reg.reg_capture_test import *
+from dynamic_analysis.reg.reg_capture import *
 from dynamic_analysis.common import stop_event
 from concurrent.futures import ThreadPoolExecutor
 from dynamic_analysis.event.event_security import *
