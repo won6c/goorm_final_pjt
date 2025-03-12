@@ -1,0 +1,13 @@
+frida==16.6.4
+pefile==2024.8.26
+psutil==6.1.0
+pywin32==308
+Requests==2.32.3
+scapy==2.6.1
+watchdog==6.0.0
+yara_python==4.5.1
+frida-tools
+yara-python
+python-magic-bin
+torch
+transformers
