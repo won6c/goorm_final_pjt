@@ -190,7 +190,7 @@
 						<DisplayName></DisplayName>
 						<Group>Administrators</Group>
 						<Password>
-							<Value></Value>
+							<Value>1234</Value>
 							<PlainText>true</PlainText>
 						</Password>
 					</LocalAccount>
@@ -201,7 +201,7 @@
 				<Enabled>true</Enabled>
 				<LogonCount>1</LogonCount>
 				<Password>
-					<Value></Value>
+					<Value>1234</Value>
 					<PlainText>true</PlainText>
 				</Password>
 			</AutoLogon>
